@@ -39,8 +39,8 @@ class Issues(db.Model):
     delivery_time = db.Column(db.String(32), index=True)
 
     def __repr__(self):
-        return'<Produkt: {}, do maszyny: {}, o numerze seryjnym: {}>'.format(
-            self.part_number, self.machine_model, self.serial_number)
+        return'<Zgłoszenie {}, Produkt: {}, do maszyny: {}, o numerze seryjnym: {}>'.format(
+            self.id, self.part_number, self.machines_model, self.serial_number)
 
 @login.user_loader
 def load_user(id):

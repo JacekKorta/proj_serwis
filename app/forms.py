@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, TextAreaField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, TextAreaField, IntegerField
 from wtforms.validators import DataRequired, ValidationError, Email, EqualTo, Length
 
 class LoginForm(FlaskForm):
@@ -17,3 +17,14 @@ class IssueForm(FlaskForm):
     part_name = StringField('Nazwa częśći (angielska z listy części):')
     issue_desc = TextAreaField('Opis usterki:', validators=[DataRequired(), Length(min=3, max=400)])
     submit = SubmitField('Wyślij zgłoszenie')
+
+class EditIssueForm(IssueForm):
+    quantity = IntegerField('Ilość:')
+    where_is_part = StringField('Status dostarczenia do magazynu:')
+    exchange_status = StringField('Status wymiany klientowi')
+    janome_status = StringField('Status zgłoszenia w Janome')
+    customer_delivery_time = StringField('Dostawa do klienta')
+    delivery_time = StringField('Dostawa so ETI')
+    comment = StringField('Uwagi')
+    submit = SubmitField('Zapisz zmiany')
+

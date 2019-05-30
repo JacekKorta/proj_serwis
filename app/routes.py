@@ -1,23 +1,29 @@
 from flask import render_template, flash, redirect, url_for, request
 from werkzeug.urls import url_parse
 from app import app, db
-from app.forms import LoginForm, IssueForm
+from app.forms import LoginForm, IssueForm, EditIssueForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Issues
 
-
 @app.route('/')
-@app.route('/index')
+@app.route('/index/')
 @login_required
 def index():
-    return render_template('index.html', version='0.01', issues=issues)
+    return render_template('index.html', issues=issues)
 
-@app.route('/issues')
+@app.route('/issues/', methods=['GET','POST'])
 @login_required
 def issues():
-    pass
+    #is showing the list of issues
+    issues = Issues.query.order_by(Issues.id).all()
+    if 'edit' in request.form:
+        issue = request.form.to_dict()
+        issue_id = issue['form_id']
+        return redirect(url_for('edit_issue', issue_id=issue_id))
 
-@app.route('/login', methods=['GET', 'POST'])
+    return render_template('issues.html', issues=issues)
+
+@app.route('/login/', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
@@ -34,14 +40,14 @@ def login():
         return redirect(next_page)
     return render_template('login.html', title='Logowanie', form=form)
 
-@app.route('/logout')
+@app.route('/logout/')
 def logout():
     logout_user()
     return redirect(url_for('index'))
 
-@app.route('/new_issue', methods = ['GET', 'POST'])
+@app.route('/new_issue/', methods = ['GET', 'POST'])
 def new_issue():
-    machines_list = ['','JANOME MB-4', 'JANOME MB-7', 'JUNO E1015']
+    machines_list = ['','JANOME MB-4', 'JANOME MB-7', 'JUNO E1015', 'JUNO E1019']
     form = IssueForm()
     #form.machines_list.choices =
     form.owner.data = current_user.username
@@ -61,3 +67,12 @@ def new_issue():
         flash("Dodano zgłoszenie serwisowe o nr: {}".format(issue.id))
     return render_template('/new_issue.html', title='Nowe zgłoszenie', form=form, machines_list=machines_list)
 
+@app.route('/edit_issue/<issue_id>')
+def edit_issue(issue_id):
+    current_issue = Issues.query.filter_by(id=issue_id).first()
+    machines_list = ['', 'JANOME MB-4', 'JANOME MB-7', 'JUNO E1015', 'JUNO E1019']
+    form = EditIssueForm()
+    form.serial_number.data = current_issue.serial_number
+    flash(current_issue.id)
+    return render_template(
+        'edit_issue.html', issue_id=issue_id, title='Edytycja zgłoszenia', form=form, machines_list=machines_list, machine_name=current_issue.machines_model)

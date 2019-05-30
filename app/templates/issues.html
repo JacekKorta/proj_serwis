@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <head>
-    <h1> Aktualny widok dla: {{ user.username }}</h1><hr>
-    {% if user.username == 'admin' %}
+    {% if current_user.user_type == 'admin' %}
     {% include "admin_view.html" %}
     {% endif %}
 </head>
