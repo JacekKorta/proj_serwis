@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Zalogowany jako: {{ current_user.username }} ({{ current_user.user_type }}) </h1>
+    <hr>
+    <p> tu będą informacje o zmianach w obserwowanych zgłsozeniach</p>
+
+{% endblock %}

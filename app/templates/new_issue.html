@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Nowe zgłoszenie</h1>
+    <form action="" method = "post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.owner.label }}
+            {{ form.owner(size=12, disabled=True) }}
+        </p>
+        <p>
+            {{ form.machine_name.label }}
+            <select name="machine" class="selectpicker form-control">
+                {% for machine in machines_list %}
+                <option value = '{{ machine }}' selected>{{ machine }}</option>
+                {% endfor %}
+            </select>
+            {#{{ form.machine_name(size=12) }}#}
+            <br>
+        </p>
+            {# {{ form.machine_name }} #}
+        <p>
+            {{ form.serial_number.label }}
+            {{ form.serial_number(size=12) }}<br>
+        </p>
+        <p>
+            {{ form.part_number.label }}
+            {{ form.part_number(size=12) }}<br>
+        </p>
+        <p>
+            {{ form.part_name.label }}
+            {{ form.part_name(size=32) }} <br>
+        </p>
+        <p>
+            {{ form.issue_desc.label }} <br>
+            {{ form.issue_desc(cols=50, rows=4) }}
+        </p>
+        <p> {{ form.submit }}</p>
+
+        {% if form.errors %}
+        {{ form.errors }}<br>
+        {{ form.owner.data }}
+        {{ form.machine_name.data }}
+        {% endif %}
+    </form>
+{% endblock %}

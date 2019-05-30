@@ -1,0 +1,32 @@
+<table border =1>
+    <tr>
+        <td>Data</td>
+        <td>Zgłaszajacy</td>
+        <td>Model maszyny</td>
+        <td>Numer seryjny</td>
+        <td>Numer części</td>
+        <td>Ilość</td>
+        <td>Nazwa części</td>
+        <td>Opis usterki</td>
+        <td>Status dostarczenia do magazynu</td>
+        <td>Status wymiany klientowi</td>
+        <td>Status zgłoszenia w Janome</td>
+        <td>Uwagi</td>
+    </tr>
+    {% for issue in issues %}
+    <tr>
+        <td>{{ issue.date }}</td>
+        <td>{{ issue.owner }}</td>
+        <td>{{ issue.machine_name }}</td>
+        <td>{{ issue.serial_number }}</td>
+        <td>{{ issue.part_number }}</td>
+        <td>{{ issue.quantity }}</td>
+        <td>{{ issue.part_name }}</td>
+        <td>{{ issue.issue_desc }}</td>
+        <td>{{ issue.where_is_part }}</td>
+        <td>{{ issue.exchange_status }}</td>
+        <td>{{ issue.janome_status }}</td>
+        <td>{{ issue.comment }}</td>
+    </tr>
+        {% endfor %}
+</table>
