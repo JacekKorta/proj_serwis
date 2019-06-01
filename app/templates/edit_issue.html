@@ -7,7 +7,11 @@
     {% if current_user.user_type == 'admin' %}
     <form action="" method = "post" novalidate>
         {{ form.hidden_tag() }}
-                    {{ form.machine_name.label }}
+        <p>
+            {{ form.owner.label }}
+            {{ form.owner(size=12, readonly=True) }}
+        </p>
+            {{ form.machine_name.label }}
             <select name="machine" class="selectpicker form-control">
                 {% for machine in machines_list %}
                 <option value = '{{ machine }}' selected>{{ machine_name }}</option>

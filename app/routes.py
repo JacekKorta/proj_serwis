@@ -4,6 +4,7 @@ from app import app, db
 from app.forms import LoginForm, IssueForm, EditIssueForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Issues
+import random
 
 @app.route('/')
 @app.route('/index/')
@@ -19,7 +20,9 @@ def issues():
     if 'edit' in request.form:
         issue = request.form.to_dict()
         issue_id = issue['form_id']
-        return redirect(url_for('edit_issue', issue_id=issue_id))
+        #random_start = random.randint(1000, 9999)
+        #random_end = random.randint(1000, 9999)
+        return redirect(url_for('edit_issue', issue_id=issue_id))#, random_start=random_start, random_end=random_end))
 
     return render_template('issues.html', issues=issues)
 
@@ -67,12 +70,29 @@ def new_issue():
         flash("Dodano zgłoszenie serwisowe o nr: {}".format(issue.id))
     return render_template('/new_issue.html', title='Nowe zgłoszenie', form=form, machines_list=machines_list)
 
-@app.route('/edit_issue/<issue_id>')
+#@app.route('/edit_issue/<random_start><issue_id><random_end>', methods=['GET', 'POST'])
+#def edit_issue(random_start,issue_id, random_end):
+@app.route('/edit_issue/<issue_id>', methods=['GET', 'POST'])
 def edit_issue(issue_id):
     current_issue = Issues.query.filter_by(id=issue_id).first()
     machines_list = ['', 'JANOME MB-4', 'JANOME MB-7', 'JUNO E1015', 'JUNO E1019']
     form = EditIssueForm()
-    form.serial_number.data = current_issue.serial_number
-    flash(current_issue.id)
+    if form.validate_on_submit():
+        current_issue.owner = form.owner.data
+        current_issue.serial_number = form.serial_number.data
+        current_issue.part_number = form.part_number.data
+        current_issue.part_name = form.part_name.data
+        current_issue.issue_desc = form.issue_desc.data
+        db.session.commit()
+        flash('Zmiany zostały zapisane')
+        return redirect(url_for('issues'))
+    elif request.method == 'GET':
+        form.owner.data = current_issue.owner
+        form.serial_number.data = current_issue.serial_number
+        form.part_number.data = current_issue.part_number
+        form.part_name.data = current_issue.part_name
+        form.issue_desc.data = current_issue.issue_desc
+
+
     return render_template(
         'edit_issue.html', issue_id=issue_id, title='Edytycja zgłoszenia', form=form, machines_list=machines_list, machine_name=current_issue.machines_model)
