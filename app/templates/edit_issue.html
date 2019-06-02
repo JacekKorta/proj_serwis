@@ -2,9 +2,9 @@
 {% block content %}
 
 <hr>
-<p> tu będzie okno edycji zgłoszeń</p>
+<p> tu będzie okno edycji zgłoszeń [USUŃ]</p>
 
-    {% if current_user.user_type == 'admin' %}
+    {#{% if current_user.user_type == 'admin' %} [KOMENTARZ]#}
     <form action="" method = "post" novalidate>
         {{ form.hidden_tag() }}
         <p>
@@ -12,10 +12,11 @@
             {{ form.owner(size=12, readonly=True) }}
         </p>
             {{ form.machine_name.label }}
-            <select name="machine" class="selectpicker form-control">
+            <select name="machine_name" class="selectpicker form-control">
                 {% for machine in machines_list %}
-                <option value = '{{ machine }}' selected>{{ machine_name }}</option>
+                <option value = '{{ machine }}'>{{ machine }}</option>
                 {% endfor %}
+                <option value = '{{ current_issue.machine_model }}' selected>{{ current_issue.machine_model }}</option>
             </select>
             {#{{ form.machine_name(size=12) }}#}
             <br>
@@ -30,12 +31,66 @@
             {{ form.part_number(size=12) }}<br>
         </p>
         <p>
+            {{ form.quantity.label }}
+            {{ form.quantity(size=5)  }}<br>
+        </p>
+        <p>
             {{ form.part_name.label }}
             {{ form.part_name(size=32) }} <br>
         </p>
         <p>
             {{ form.issue_desc.label }} <br>
-            {{ form.issue_desc(cols=50, rows=4) }}
+            {{ form.issue_desc(cols=50, rows=1) }}
+        </p>
+        <p>
+            {{ form.where_is_part.label }}
+            <select name="where_is_part" class="selectpicker form-control">
+                <option value="nowe">Nowe</option>
+                <option value="czeka na dostarczenie">Czeka na dostarczenie</option>
+                <option value="dostarczone">Dostarczone</option>
+                <option value="do wysłania do producenta">Do wysłania do producenta</option>
+                <option value="do zwrotu klientowi">Do zwrotu klientowi</option>
+                <option value="zamknięte">Zamknięte</option>
+                <option value="{{ current_issue.where_is_part }}" selected>{{ current_issue.where_is_part }}</option>
+            </select><br>
+        </p>
+        <p>
+            {{ form.exchange_status.label }}
+            <select name="exchange_status" class="selectpicker form-control">
+                <option value="nowe">Nowe</option>
+                <option value="czeka na wydanie">Czeka na wydanie</option>
+                <option value="czeka na wydanie (do zamówienia)">Czeka na wydanie (do zamówienia)</option>
+                <option value="czeka na wydanie (zamówione)">Czeka na wydanie (zamówione)</option>
+                <option value="czeka na wydanie (z dostawy)">Czeka na wydanie (z dostawy)</option>
+                <option value="wydane">Wydane</option>
+                <option value="odrzucone">Odrzucone</option>
+                <option value="{{ current_issue.exchange_status }}" selected>{{ current_issue.exchange_status }}</option>
+            </select><br>
+            <br>
+        </p>
+        <p>
+            {{ form.janome_status.label }}
+            <select name="janome_status" class="selectpicker form-control">
+                <option value="niezgłoszone">Niezgłoszone</option>
+                <option value="Zgłoszone">Zgłoszone</option>
+                <option value="czeka na wymianę">Czeka na wydanie</option>
+                <option value="wymienione">Wymienione</option>
+                <option value="odrzucone">Odrzucone</option>
+                <option value="{{ current_issue.janome_status  }}" selected>{{ current_issue.janome_status  }}</option>
+            </select><br>
+        </p>
+        <p>
+            {{ form.comment.label }}<br>
+            {{ form.comment(cols=50, rows=1)  }}<br>
+        </p>
+        <p>
+            {{ form.customer_delivery_time.label }}
+            <input type="date" name="customer_delivery_time" value="{{ current_issue.customer_delivery_time }}">
+        </p>
+        <p>
+            {{ form.delivery_time.label }}
+
+            <input type="date" name="delivery_time" value="{{ current_issue.delivery_time }}">
         </p>
         <p> {{ form.submit }}</p>
 
@@ -45,6 +100,6 @@
         {{ form.machine_name.data }}
         {% endif %}
     </form>
-    {% endif %}
+    {#{% endif %} {komentarz 1 - if admin...#}
 
 {% endblock %}

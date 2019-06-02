@@ -4,12 +4,14 @@ from app import app, db
 from app.forms import LoginForm, IssueForm, EditIssueForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Issues
-import random
+
 
 @app.route('/')
 @app.route('/index/')
 @login_required
 def index():
+    #issues = Issues.query.filter(or_(Issues.janome_status != "wymienione", Issues.janome_status != "odrzucone"))
+    issues = Issues.query.filter(~Issues.janome_status.in_(['wymienione', 'odrzucone']))
     return render_template('index.html', issues=issues)
 
 @app.route('/issues/', methods=['GET','POST'])
@@ -50,24 +52,26 @@ def logout():
 
 @app.route('/new_issue/', methods = ['GET', 'POST'])
 def new_issue():
-    machines_list = ['','JANOME MB-4', 'JANOME MB-7', 'JUNO E1015', 'JUNO E1019']
+    machines_list = ['JANOME MB-4', 'JANOME MB-7', 'JUNO E1015', 'JUNO E1019', '']
     form = IssueForm()
     #form.machines_list.choices =
     form.owner.data = current_user.username
     if form.validate_on_submit():
         issue =Issues(
             owner=current_user.username,
-            machines_model=request.form.get('machine'),
+            machine_model=request.form.get('machine'),
             serial_number=form.serial_number.data,
             part_number=form.part_number.data,
             quantity=1,
             part_name=form.part_name.data,
-            where_is_part='Czeka na dostarczenie',
-            exchange_status='Czeka na wydanie',
-            janome_status='Niezgłoszone')
+            issue_desc = form.issue_desc.data,
+            where_is_part='nowe',
+            exchange_status='nowe',
+            janome_status='niezgłoszone')
         db.session.add(issue)
         db.session.commit()
         flash("Dodano zgłoszenie serwisowe o nr: {}".format(issue.id))
+        return redirect(url_for('issues'))
     return render_template('/new_issue.html', title='Nowe zgłoszenie', form=form, machines_list=machines_list)
 
 #@app.route('/edit_issue/<random_start><issue_id><random_end>', methods=['GET', 'POST'])
@@ -75,24 +79,41 @@ def new_issue():
 @app.route('/edit_issue/<issue_id>', methods=['GET', 'POST'])
 def edit_issue(issue_id):
     current_issue = Issues.query.filter_by(id=issue_id).first()
-    machines_list = ['', 'JANOME MB-4', 'JANOME MB-7', 'JUNO E1015', 'JUNO E1019']
+    machines_list = ['JANOME MB-4', 'JANOME MB-7', 'JUNO E1015', 'JUNO E1019', '']
     form = EditIssueForm()
     if form.validate_on_submit():
         current_issue.owner = form.owner.data
+        current_issue.machine_model = form.machine_name.data
         current_issue.serial_number = form.serial_number.data
         current_issue.part_number = form.part_number.data
+        current_issue.quantity = form.quantity.data
         current_issue.part_name = form.part_name.data
         current_issue.issue_desc = form.issue_desc.data
+        current_issue.where_is_part = form.where_is_part.data
+        current_issue.exchange_status = form.exchange_status.data
+        current_issue.janome_status = form.janome_status.data
+        current_issue.comment = form.comment.data
+        current_issue.customer_delivery_time = form.customer_delivery_time.data
+        current_issue.delivery_time = form.delivery_time.data
         db.session.commit()
         flash('Zmiany zostały zapisane')
         return redirect(url_for('issues'))
     elif request.method == 'GET':
         form.owner.data = current_issue.owner
+        form.machine_name.data = current_issue.machine_model
         form.serial_number.data = current_issue.serial_number
         form.part_number.data = current_issue.part_number
+        form.quantity.data = current_issue.quantity
         form.part_name.data = current_issue.part_name
         form.issue_desc.data = current_issue.issue_desc
+        form.where_is_part.data = current_issue.where_is_part
+        form.exchange_status.data = current_issue.exchange_status
+        form.janome_status.data = current_issue.janome_status
+        form.comment.data = current_issue.comment
+        form.customer_delivery_time.data = current_issue.customer_delivery_time
+        form.delivery_time.data = current_issue.delivery_time
+
 
 
     return render_template(
-        'edit_issue.html', issue_id=issue_id, title='Edytycja zgłoszenia', form=form, machines_list=machines_list, machine_name=current_issue.machines_model)
+        'edit_issue.html', issue_id=issue_id, title='Edytycja zgłoszenia', form=form, machines_list=machines_list, current_issue=current_issue)

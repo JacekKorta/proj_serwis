@@ -25,7 +25,7 @@ class Issues(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     time_stamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     owner = db.Column(db.String(32), db.ForeignKey('user.username'), nullable=False)
-    machines_model = db.Column(db.String(64), index=True)
+    machine_model = db.Column(db.String(64), index=True)
     serial_number = db.Column(db.String(16))
     part_number = db.Column(db.String(32), index=True)
     quantity = db.Column(db.Integer)
@@ -41,6 +41,13 @@ class Issues(db.Model):
     def __repr__(self):
         return'<Zgłoszenie {}, Produkt: {}, do maszyny: {}, o numerze seryjnym: {}>'.format(
             self.id, self.part_number, self.machines_model, self.serial_number)
+
+class Machines(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(56), index=True)
+
+    def __repr__(self):
+        return ' <id {}, Nazwa: {}>'.format(self.id, self.name)
 
 @login.user_loader
 def load_user(id):

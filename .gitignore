@@ -1,6 +1,8 @@
 ''
 __pycache__/
+migrations/
 config.py
 logs/
 venv/
+app.db
 .idea/
