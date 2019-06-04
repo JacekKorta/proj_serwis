@@ -1,5 +1,5 @@
 # Service issue manage system
-## <krótki opis>
+## App to manage service issues between sales and tech service department and the manufacturer. 
 ## Table of context
 ### Introduction
 #### <ewentualne rozwinięcie wprowadzenia>
