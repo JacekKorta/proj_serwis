@@ -10,15 +10,17 @@
         <td>Opis usterki</td>
         <td>Status dostarczenia do magazynu</td>
         <td>Status wymiany klientowi</td>
-        <td>Status zgłoszenia w Janome</td>
-        <td>Termin dostawy do klienta</td>
-        <td>Termin dostawy do ETI</td>
-        <td>Uwagi</td>
+        {% if current_user.user_type in ("admin", "magazyn") %}
+            <td>Status zgłoszenia w Janome</td>
+            <td>Termin dostawy do klienta</td>
+            <td>Termin dostawy do ETI</td>
+            <td>Uwagi</td>
+        {% endif %}
     </tr>
     {% for issue in issues %}
     <tr>
         <form action="" method="post">
-            <td>{{ issue.time_stamp }}</td>
+            <td>{{ moment(issue.time_stamp).format('LLL') }}</td>
             <td>{{ issue.owner }}</td>
             <td>{{ issue.machine_model }}</td>
             <td>{{ issue.serial_number }}</td>
@@ -28,10 +30,12 @@
             <td>{{ issue.issue_desc }}</td>
             <td>{{ issue.where_is_part }}</td>
             <td>{{ issue.exchange_status }}</td>
-            <td>{{ issue.janome_status }}</td>
-            <td>{{ issue.customer_delivery_time }}</td>
-            <td>{{ issue.delivery_time }}</td>
-            <td>{{ issue.comment }}</td>
+            {% if current_user.user_type in ("admin", "magazyn") %}
+                <td>{{ issue.janome_status }}</td>
+                <td>{{ issue.customer_delivery_time }}</td>
+                <td>{{ issue.delivery_time }}</td>
+                <td>{{ issue.comment }}</td>
+            {% endif %}
             <input type="hidden" name="form_id" value="{{ issue.id }}">
            {# <input type="hidden" name="form_owner" value="{{ issue.owner }}">
             <input type="hidden" name="form_machines_model" value="{{ issue.machines_model }}">

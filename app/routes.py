@@ -7,24 +7,33 @@ from app.models import User, Issues
 
 
 @app.route('/')
-@app.route('/index/')
+@app.route('/index/', methods=['GET','POST'])
 @login_required
 def index():
-    #issues = Issues.query.filter(or_(Issues.janome_status != "wymienione", Issues.janome_status != "odrzucone"))
-    issues = Issues.query.filter(~Issues.janome_status.in_(['wymienione', 'odrzucone']))
-    return render_template('index.html', issues=issues)
+#strona główna z niezakończonymi zgłoszeniami, dla danego użytkownika [PL]
+    if current_user.user_type in ('admin','magazyn'):
+        issues = Issues.query.filter(~Issues.janome_status.in_(['wymienione', 'odrzucone']))
+    elif current_user.user_type in ('serwis', 'strima'):
+        issues = Issues.query.filter(Issues.owner == current_user.username,  ~Issues.janome_status.in_(['wymienione', 'odrzucone']))
+    if 'edit' in request.form:
+        issue = request.form.to_dict()
+        issue_id = issue['form_id']
+        return redirect(url_for('edit_issue', issue_id=issue_id))
+    return render_template('index.html', issues=issues, title='Strona główna', version='0.01')
 
 @app.route('/issues/', methods=['GET','POST'])
 @login_required
 def issues():
-    #is showing the list of issues
-    issues = Issues.query.order_by(Issues.id).all()
+#is showing the list of issues
+    #issues = Issues.query.order_by(Issues.id).all()
+    if current_user.user_type in ('admin', 'magazyn'):
+        issues = Issues.query.order_by(Issues.id).all()
+    elif current_user.user_type in ('serwis', 'strima'):
+        issues = Issues.query.filter(Issues.owner == current_user.username).order_by(Issues.id).all()
     if 'edit' in request.form:
         issue = request.form.to_dict()
         issue_id = issue['form_id']
-        #random_start = random.randint(1000, 9999)
-        #random_end = random.randint(1000, 9999)
-        return redirect(url_for('edit_issue', issue_id=issue_id))#, random_start=random_start, random_end=random_end))
+        return redirect(url_for('edit_issue', issue_id=issue_id))
 
     return render_template('issues.html', issues=issues)
 
@@ -51,10 +60,10 @@ def logout():
     return redirect(url_for('index'))
 
 @app.route('/new_issue/', methods = ['GET', 'POST'])
+@login_required
 def new_issue():
     machines_list = ['JANOME MB-4', 'JANOME MB-7', 'JUNO E1015', 'JUNO E1019', '']
     form = IssueForm()
-    #form.machines_list.choices =
     form.owner.data = current_user.username
     if form.validate_on_submit():
         issue =Issues(
@@ -74,9 +83,8 @@ def new_issue():
         return redirect(url_for('issues'))
     return render_template('/new_issue.html', title='Nowe zgłoszenie', form=form, machines_list=machines_list)
 
-#@app.route('/edit_issue/<random_start><issue_id><random_end>', methods=['GET', 'POST'])
-#def edit_issue(random_start,issue_id, random_end):
 @app.route('/edit_issue/<issue_id>', methods=['GET', 'POST'])
+@login_required
 def edit_issue(issue_id):
     current_issue = Issues.query.filter_by(id=issue_id).first()
     machines_list = ['JANOME MB-4', 'JANOME MB-7', 'JUNO E1015', 'JUNO E1019', '']
@@ -112,8 +120,6 @@ def edit_issue(issue_id):
         form.comment.data = current_issue.comment
         form.customer_delivery_time.data = current_issue.customer_delivery_time
         form.delivery_time.data = current_issue.delivery_time
-
-
 
     return render_template(
         'edit_issue.html', issue_id=issue_id, title='Edytycja zgłoszenia', form=form, machines_list=machines_list, current_issue=current_issue)

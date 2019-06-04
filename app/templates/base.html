@@ -1,12 +1,14 @@
-<!DOCTYPE html>
-<html>
+
+
 <head>
-    <meta charset="UTF-8">
     {% if version %}
     <title>Złoszenia serwisowe ETI {{ version }}</title>
     {% else %}
     <title>Zgłoszenia serwisowe ETI</title>
     {% endif %}
+    {{ moment.include_jquery() }}
+    {{ moment.include_moment() }}
+    {{ moment.lang("pl") }}
 </head>
 <body>
     <div>
@@ -37,4 +39,4 @@
     {% endwith %}
     {% block content %} {% endblock %}
 </body>
-</html>
+
