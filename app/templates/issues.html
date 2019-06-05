@@ -1,8 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
 <head>
-
-    {% include "user_view.html" %}
+    {% if current_user.user_type in "admin" %}
+        {% include "admin_view.html" %}
+    {% elif current_user.user_type in "warehouse" %}
+        {% include "warehouse_view.html" %}
+    {% elif current_user.user_type in "service" %}
+        {% include "service_view.html" %}
+    {% endif %}
 
 </head>
 {% endblock %}

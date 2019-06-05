@@ -10,12 +10,11 @@
         <td>Opis usterki</td>
         <td>Status dostarczenia do magazynu</td>
         <td>Status wymiany klientowi</td>
-        {% if current_user.user_type in ("admin", "magazyn") %}
-            <td>Status zgłoszenia w Janome</td>
-            <td>Termin dostawy do klienta</td>
-            <td>Termin dostawy do ETI</td>
-            <td>Uwagi</td>
-        {% endif %}
+        <td>Status zgłoszenia w Janome</td>
+        <td>Termin dostawy do klienta</td>
+        <td>Termin dostawy do ETI</td>
+        <td>Uwagi</td>
+
     </tr>
     {% for issue in issues %}
     <tr>
@@ -30,12 +29,12 @@
             <td>{{ issue.issue_desc }}</td>
             <td>{{ issue.where_is_part }}</td>
             <td>{{ issue.exchange_status }}</td>
-            {% if current_user.user_type in ("admin", "magazyn") %}
-                <td>{{ issue.janome_status }}</td>
-                <td>{{ issue.customer_delivery_time }}</td>
-                <td>{{ issue.delivery_time }}</td>
-                <td>{{ issue.comment }}</td>
-            {% endif %}
+
+            <td>{{ issue.janome_status }}</td>
+            <td>{{ issue.customer_delivery_time }}</td>
+            <td>{{ issue.delivery_time }}</td>
+            <td>{{ issue.comment }}</td>
+
             <input type="hidden" name="form_id" value="{{ issue.id }}">
            {# <input type="hidden" name="form_owner" value="{{ issue.owner }}">
             <input type="hidden" name="form_machines_model" value="{{ issue.machines_model }}">

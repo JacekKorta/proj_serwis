@@ -11,9 +11,9 @@ from app.models import User, Issues
 @login_required
 def index():
 #strona główna z niezakończonymi zgłoszeniami, dla danego użytkownika [PL]
-    if current_user.user_type in ('admin','magazyn'):
+    if current_user.user_type in ('admin', 'warehouse'):
         issues = Issues.query.filter(~Issues.janome_status.in_(['wymienione', 'odrzucone']))
-    elif current_user.user_type in ('serwis', 'strima'):
+    elif current_user.user_type in ('service'):
         issues = Issues.query.filter(Issues.owner == current_user.username,  ~Issues.janome_status.in_(['wymienione', 'odrzucone']))
     if 'edit' in request.form:
         issue = request.form.to_dict()
@@ -26,9 +26,9 @@ def index():
 def issues():
 #is showing the list of issues
     #issues = Issues.query.order_by(Issues.id).all()
-    if current_user.user_type in ('admin', 'magazyn'):
+    if current_user.user_type in ('admin', 'warehouse'):
         issues = Issues.query.order_by(Issues.id).all()
-    elif current_user.user_type in ('serwis', 'strima'):
+    elif current_user.user_type in ('service'):
         issues = Issues.query.filter(Issues.owner == current_user.username).order_by(Issues.id).all()
     if 'edit' in request.form:
         issue = request.form.to_dict()
