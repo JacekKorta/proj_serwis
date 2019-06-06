@@ -10,6 +10,7 @@ install packages:
  - flask
  - python-dotenv
  - flask-wtf
+ - flask_login
  - flask-sqlalchemy
  - flask-migrate
  - flask-moment (convert time stamp for user local time)
