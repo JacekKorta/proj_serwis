@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h1> Dodaj nową maszynę </h1>
+  <form action="" method="post">
+    {{ form.hidden_tag() }}
+      {{ form.machine_name.label }}
+      {{ form.machine_name(size=16)}}
+
+      {{ form.submit }}
+
+      {% if form.errors %}
+      {{ form.errors }}<br>
+      {% endif %}
+  </form>
+{% if machine_list %}
+  {% for machine in machine_list %}
+    {{ machine }}
+  {% endfor %}
+{% endif %}
+
+{% endblock %}

@@ -28,3 +28,15 @@ class EditIssueForm(IssueForm):
     comment = TextAreaField('Uwagi: ')
     submit = SubmitField('Zapisz zmiany')
 
+class UserForm(FlaskForm):
+    user_type = StringField('Typ użytkownika', validators=[DataRequired()])
+    username = StringField('Nazwa użytkownika:', validators=[DataRequired()])
+    email = StringField('Email:',validators=[DataRequired()])
+    password = PasswordField('Hasło:', validators=[DataRequired()])
+    password2 = PasswordField('Powtórz hasło:', validators=[DataRequired()])
+    submit = SubmitField('Zapisz')
+
+class NewMachineForm(FlaskForm):
+    #TODO ADD: unikalność nazw maszyn
+    machine_name = StringField('Model maszyny:')
+    submit = SubmitField('Zapisz')

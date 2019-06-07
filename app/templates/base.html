@@ -14,17 +14,24 @@
     <div>
         <H2>Zgłoszenia serwisowe ETI 0.01</H2>
         {% if current_user.username %}
-        <H3>Zalogowany jako: {{ current_user.username }} ({{ current_user.user_type }})</H3><br>
+          <H3>Zalogowany jako: {{ current_user.username }} ({{ current_user.user_type }})</H3><br>
         {% endif %}
         Menu:
-        <a href=" {{ url_for('index') }}">Strona główna</a>
+          <a href=" {{ url_for('index') }}">Strona główna</a>
         {% if current_user.is_anonymous %}
-        <a href=" {{ url_for('login') }}">Logowanie</a>
+          <a href=" {{ url_for('login') }}">Logowanie</a>
         {% else %}
-        <a href=" {{ url_for('new_issue') }}">Nowe zgłoszenie</a>
-        <a href=" {{ url_for('issues') }}">Zgłoszenia</a>
-        <a href="{{ url_for('logout') }}">Wyloguj</a>
+          <a href=" {{ url_for('new_issue') }}">Nowe zgłoszenie</a>
+          <a href=" {{ url_for('issues') }}">Zgłoszenia</a>
+          <a href="{{ url_for('logout') }}">Wyloguj</a>
+            {% if current_user.user_type in "admin" %}
+            <br><br> Narzędzia administatora:
+              <a href=" {{ url_for('add_user') }}">Dodaj użytkownia</a>
+              <a href=" {{ url_for('edit_user') }}">Edytuj użytkownia </a>
+              <a href=" {{ url_for('add_machine') }}">Dodaj maszynę </a>
+            {% endif %}
         {% endif %}
+
 
     </div>
     <hr>
@@ -39,4 +46,3 @@
     {% endwith %}
     {% block content %} {% endblock %}
 </body>
-

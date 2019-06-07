@@ -11,7 +11,6 @@ class User(UserMixin,db.Model):
     user_type = db.Column(db.String(64))
     owner_name = db.relationship('Issues', backref='owner_name', lazy=True)
 
-
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
@@ -52,4 +51,3 @@ class Machines(db.Model):
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
-

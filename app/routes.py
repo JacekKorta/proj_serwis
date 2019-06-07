@@ -1,9 +1,9 @@
 from flask import render_template, flash, redirect, url_for, request
 from werkzeug.urls import url_parse
 from app import app, db
-from app.forms import LoginForm, IssueForm, EditIssueForm
+from app.forms import LoginForm, IssueForm, EditIssueForm, UserForm, NewMachineForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User, Issues
+from app.models import User, Issues, Machines
 
 
 @app.route('/')
@@ -123,3 +123,23 @@ def edit_issue(issue_id):
 
     return render_template(
         'edit_issue.html', issue_id=issue_id, title='Edytycja zgłoszenia', form=form, machines_list=machines_list, current_issue=current_issue)
+
+@app.route('/add_user/', methods=['GET', 'POST'])
+def add_user():
+    pass
+
+@app.route('/edit_user/', methods=['GET', 'POST'])
+def edit_user():
+    pass
+
+@app.route('/add_machine/', methods=['GET', 'POST'])
+def add_machine():
+    form = NewMachineForm()
+    machine_list = Machines.query.order_by(Machines.name).all()
+    if form.validate_on_submit():
+        machine = Machines(name=form.machine_name.data)
+        db.session.add(machine)
+        db.session.commit()
+        flash('Dodano maszynę')
+        return redirect(url_for('add_machine'))
+    return(render_template('add_machine.html', title="Dodaj maszynę", form=form, machine_list=machine_list))
