@@ -25,7 +25,6 @@ def index():
 @login_required
 def issues():
 #is showing the list of issues
-    #issues = Issues.query.order_by(Issues.id).all()
     if current_user.user_type in ('admin', 'warehouse'):
         issues = Issues.query.order_by(Issues.id).all()
     elif current_user.user_type in ('service'):
@@ -62,7 +61,7 @@ def logout():
 @app.route('/new_issue/', methods = ['GET', 'POST'])
 @login_required
 def new_issue():
-    machines_list = ['JANOME MB-4', 'JANOME MB-7', 'JUNO E1015', 'JUNO E1019', '']
+    machines_list = Machines.query.order_by(Machines.name).all()
     form = IssueForm()
     form.owner.data = current_user.username
     if form.validate_on_submit():
@@ -85,44 +84,49 @@ def new_issue():
 
 @app.route('/edit_issue/<issue_id>', methods=['GET', 'POST'])
 @login_required
+
 def edit_issue(issue_id):
     current_issue = Issues.query.filter_by(id=issue_id).first()
-    machines_list = ['JANOME MB-4', 'JANOME MB-7', 'JUNO E1015', 'JUNO E1019', '']
+    machines_list = Machines.query.order_by(Machines.name).all()
     form = EditIssueForm()
-    if form.validate_on_submit():
-        current_issue.owner = form.owner.data
-        current_issue.machine_model = form.machine_name.data
-        current_issue.serial_number = form.serial_number.data
-        current_issue.part_number = form.part_number.data
-        current_issue.quantity = form.quantity.data
-        current_issue.part_name = form.part_name.data
-        current_issue.issue_desc = form.issue_desc.data
-        current_issue.where_is_part = form.where_is_part.data
-        current_issue.exchange_status = form.exchange_status.data
-        current_issue.janome_status = form.janome_status.data
-        current_issue.comment = form.comment.data
-        current_issue.customer_delivery_time = form.customer_delivery_time.data
-        current_issue.delivery_time = form.delivery_time.data
-        db.session.commit()
-        flash('Zmiany zostały zapisane')
-        return redirect(url_for('issues'))
-    elif request.method == 'GET':
-        form.owner.data = current_issue.owner
-        form.machine_name.data = current_issue.machine_model
-        form.serial_number.data = current_issue.serial_number
-        form.part_number.data = current_issue.part_number
-        form.quantity.data = current_issue.quantity
-        form.part_name.data = current_issue.part_name
-        form.issue_desc.data = current_issue.issue_desc
-        form.where_is_part.data = current_issue.where_is_part
-        form.exchange_status.data = current_issue.exchange_status
-        form.janome_status.data = current_issue.janome_status
-        form.comment.data = current_issue.comment
-        form.customer_delivery_time.data = current_issue.customer_delivery_time
-        form.delivery_time.data = current_issue.delivery_time
+    if current_user.username == current_issue.owner:
+        if form.validate_on_submit():
+            current_issue.owner = form.owner.data
+            current_issue.machine_model = form.machine_name.data
+            current_issue.serial_number = form.serial_number.data
+            current_issue.part_number = form.part_number.data
+            current_issue.quantity = form.quantity.data
+            current_issue.part_name = form.part_name.data
+            current_issue.issue_desc = form.issue_desc.data
+            current_issue.where_is_part = form.where_is_part.data
+            current_issue.exchange_status = form.exchange_status.data
+            current_issue.janome_status = form.janome_status.data
+            current_issue.comment = form.comment.data
+            current_issue.customer_delivery_time = form.customer_delivery_time.data
+            current_issue.delivery_time = form.delivery_time.data
+            db.session.commit()
+            flash('Zmiany zostały zapisane')
+            return redirect(url_for('issues'))
+        elif request.method == 'GET':
+            form.owner.data = current_issue.owner
+            form.machine_name.data = current_issue.machine_model
+            form.serial_number.data = current_issue.serial_number
+            form.part_number.data = current_issue.part_number
+            form.quantity.data = current_issue.quantity
+            form.part_name.data = current_issue.part_name
+            form.issue_desc.data = current_issue.issue_desc
+            form.where_is_part.data = current_issue.where_is_part
+            form.exchange_status.data = current_issue.exchange_status
+            form.janome_status.data = current_issue.janome_status
+            form.comment.data = current_issue.comment
+            form.customer_delivery_time.data = current_issue.customer_delivery_time
+            form.delivery_time.data = current_issue.delivery_time
 
-    return render_template(
-        'edit_issue.html', issue_id=issue_id, title='Edytycja zgłoszenia', form=form, machines_list=machines_list, current_issue=current_issue)
+        return render_template(
+            'edit_issue.html', issue_id=issue_id, title='Edytycja zgłoszenia', form=form, machines_list=machines_list, current_issue=current_issue)
+    else:
+        return redirect(url_for('index'))#nieuprawniony dostęp
+
 
 @app.route('/add_user/', methods=['GET', 'POST'])
 def add_user():
@@ -133,13 +137,26 @@ def edit_user():
     pass
 
 @app.route('/add_machine/', methods=['GET', 'POST'])
+@login_required
+#add new machine for db
 def add_machine():
-    form = NewMachineForm()
-    machine_list = Machines.query.order_by(Machines.name).all()
-    if form.validate_on_submit():
-        machine = Machines(name=form.machine_name.data)
-        db.session.add(machine)
-        db.session.commit()
-        flash('Dodano maszynę')
-        return redirect(url_for('add_machine'))
-    return(render_template('add_machine.html', title="Dodaj maszynę", form=form, machine_list=machine_list))
+    if current_user.user_type == 'admin':
+        form = NewMachineForm()
+        machine_list = Machines.query.order_by(Machines.name).all()
+        if form.validate_on_submit():
+            machine = Machines(name=form.machine_name.data)
+            db.session.add(machine)
+            db.session.commit()
+            flash('Dodano maszynę')
+            return redirect(url_for('add_machine'))
+        if "remove" in request.form:
+            machine = request.form.to_dict()
+            machine_id = machine['form_machine_id']
+            current_machine = Machines.query.filter_by(id=machine_id).first()
+            db.session.delete(current_machine)
+            db.session.commit()
+            flash('Usunięteo maszynę {}'.format(current_machine))
+            return redirect(url_for('add_machine'))
+        return(render_template('add_machine.html', title="Dodaj maszynę", form=form, machine_list=machine_list))
+    else:
+        return redirect(url_for('index')) #nieuprawniony dostęp

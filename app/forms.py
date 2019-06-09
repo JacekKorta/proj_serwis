@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, TextAreaField, IntegerField
 from wtforms.validators import DataRequired, ValidationError, Email, EqualTo, Length
+from app.models import Machines
 
 class LoginForm(FlaskForm):
     username = StringField('Użytkownik', validators=[DataRequired()])
@@ -9,7 +10,7 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Zaloguj')
 
 class IssueForm(FlaskForm):
-    machines_list = ['','JANOME MB-4', 'JANOME MB-7', 'JUNO E1015']
+    #machines_list = ['','JANOME MB-4', 'JANOME MB-7', 'JUNO E1015'] - toremove
     owner = StringField('Zgłaszajacy: ', validators=[DataRequired()])
     machine_name = StringField('Model maszyny: ')#, choices=machines_list)#, validators=[DataRequired()])
     serial_number = StringField('Numer seryjny: ', validators=[DataRequired()])
@@ -37,6 +38,10 @@ class UserForm(FlaskForm):
     submit = SubmitField('Zapisz')
 
 class NewMachineForm(FlaskForm):
-    #TODO ADD: unikalność nazw maszyn
     machine_name = StringField('Model maszyny:')
     submit = SubmitField('Zapisz')
+
+    def validate_machine_name(self, machine_name):
+        machine = Machines.query.filter_by(name=machine_name.data).first()
+        if machine is not None:
+            raise ValidationError('Ten model maszyny jest już w bazie')
