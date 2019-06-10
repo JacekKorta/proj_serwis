@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request
 from werkzeug.urls import url_parse
 from app import app, db
-from app.forms import LoginForm, IssueForm, EditIssueForm, UserForm, NewMachineForm
+from app.forms import LoginForm, IssueForm, EditIssueForm, UserForm, NewMachineForm, UserEditForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Issues, Machines
 
@@ -128,13 +128,51 @@ def edit_issue(issue_id):
         return redirect(url_for('index'))#nieuprawniony dostęp
 
 
-@app.route('/add_user/', methods=['GET', 'POST'])
-def add_user():
-    pass
+@app.route('/users/', methods=['GET', 'POST'])
+@login_required
+# add, remove or go to edit site for all users
+def users():
+    users_type_list = ['admin', 'warehouse', 'service', 'office', '']
+    users = User.query.order_by(User.username).all()
+    if current_user.user_type == 'admin':
+        form = UserForm()
+        if form.validate_on_submit():
+            users_list = User.query.order_by(User.username).all()
+            user = User(
+            username = form.username.data,
+            email = form.email.data,
+            user_type = request.form.get('user_type')
+            )
+            user.set_password(form.password.data)
+            db.session.add(user)
+            db.session.commit()
+            flash('Dodano nowego użytkownika')
+            return redirect(url_for('users'))
+        if "remove" in request.form:
+            user = request.form.to_dict()
+            user_id = user['form_user_id']
+            selected_user = User.query.filter_by(id=user_id).first()
+            db.session.delete(selected_user)
+            db.session.commit()
+            flash('Usunięto użytkownika {}'.format(selected_user))
+            return redirect(url_for('users'))
+        if "edit" in request.form:
+            user = request.form.to_dict()
+            user_id = user['form_user_id']
+            selected_user = User.query.filter_by(id=user_id).first()
+            return redirect(url_for('edit_user'))#, user_id=user_id))
+    return render_template('/users.html', title='Uzytkownicy', form=form, users_type_list=users_type_list, users=users)
 
 @app.route('/edit_user/', methods=['GET', 'POST'])
+@login_required
+#edit users
 def edit_user():
+    #form = UserEditForm()
+    #if current_user.user_type == 'admin':
+        #selected_user = User.query.filter_by(id=user_id).first()
+        #form.username.data = selected_user.username
     pass
+    return render_template('/edit_user.html')#, title = 'Edycja konta użytkownika')#, form=form)
 
 @app.route('/add_machine/', methods=['GET', 'POST'])
 @login_required

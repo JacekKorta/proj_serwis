@@ -34,8 +34,19 @@ class UserForm(FlaskForm):
     username = StringField('Nazwa użytkownika:', validators=[DataRequired()])
     email = StringField('Email:',validators=[DataRequired()])
     password = PasswordField('Hasło:', validators=[DataRequired()])
-    password2 = PasswordField('Powtórz hasło:', validators=[DataRequired()])
+    password2 = PasswordField('Powtórz hasło:', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Zapisz')
+
+    def validate_user_name(self, username):
+        user = User.query.filter_by(username=username.data).first()
+        if user is not None:
+            raise ValidationError('Uzytkownik o takiej nazwie już istnieje.')
+
+class UserEditForm(UserForm):
+    password = PasswordField('Hasło:')
+    password2 = PasswordField('Powtórz hasło:', validators=[EqualTo('password')])
+
+
 
 class NewMachineForm(FlaskForm):
     machine_name = StringField('Model maszyny:')
@@ -44,4 +55,4 @@ class NewMachineForm(FlaskForm):
     def validate_machine_name(self, machine_name):
         machine = Machines.query.filter_by(name=machine_name.data).first()
         if machine is not None:
-            raise ValidationError('Ten model maszyny jest już w bazie')
+            raise ValidationError('Ten model maszyny jest już w bazie.')

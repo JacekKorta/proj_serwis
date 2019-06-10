@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<h3> Edytuj użytkownia </h3>
+<h3> Dodaj nowego użytkownia </h3>
 <form action="" method = "post" novalidate>
   {{ form.hidden_tag() }}
   <p>
@@ -39,3 +39,26 @@
 {% if form.errors %}
 {{ form.errors }}<br>
 {% endif %}
+<h3>Lista aktualnych użytkowników: <h3>
+<table border =1>
+  <tr>
+    <td>Id</td>
+    <td>Nazwa</td>
+    <td>Email</td>
+    <td>Typ</td>
+  </tr>
+    {% for user in users %}
+    <tr>
+        <form action="" method="post">
+          <td>{{ user.id }}</td>
+          <td>{{ user.username }} </td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.user_type }}</td>
+          <input type="hidden" name="form_user_id" value="{{ user.id }}">
+          <td><input type="submit" name="edit" value="edytuj"></td>
+          <td><input type="submit" name="remove" value="usuń"</td>
+        </form>
+    </tr>
+      {% endfor %}
+
+{% endblock %}
