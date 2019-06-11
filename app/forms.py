@@ -46,8 +46,6 @@ class UserEditForm(UserForm):
     password = PasswordField('Hasło:')
     password2 = PasswordField('Powtórz hasło:', validators=[EqualTo('password')])
 
-
-
 class NewMachineForm(FlaskForm):
     machine_name = StringField('Model maszyny:')
     submit = SubmitField('Zapisz')

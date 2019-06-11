@@ -11,7 +11,7 @@ from app.models import User, Issues, Machines
 @login_required
 def index():
 #strona główna z niezakończonymi zgłoszeniami, dla danego użytkownika [PL]
-    if current_user.user_type in ('admin', 'warehouse'):
+    if current_user.user_type in ('admin', 'warehouse', 'office'):
         issues = Issues.query.filter(~Issues.janome_status.in_(['wymienione', 'odrzucone']))
     elif current_user.user_type in ('service'):
         issues = Issues.query.filter(Issues.owner == current_user.username,  ~Issues.janome_status.in_(['wymienione', 'odrzucone']))
@@ -20,21 +20,6 @@ def index():
         issue_id = issue['form_id']
         return redirect(url_for('edit_issue', issue_id=issue_id))
     return render_template('index.html', issues=issues, title='Strona główna', version='0.01')
-
-@app.route('/issues/', methods=['GET','POST'])
-@login_required
-def issues():
-#is showing the list of issues
-    if current_user.user_type in ('admin', 'warehouse'):
-        issues = Issues.query.order_by(Issues.id).all()
-    elif current_user.user_type in ('service'):
-        issues = Issues.query.filter(Issues.owner == current_user.username).order_by(Issues.id).all()
-    if 'edit' in request.form:
-        issue = request.form.to_dict()
-        issue_id = issue['form_id']
-        return redirect(url_for('edit_issue', issue_id=issue_id))
-
-    return render_template('issues.html', issues=issues)
 
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
@@ -57,6 +42,21 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+@app.route('/issues/', methods=['GET','POST'])
+@login_required
+def issues():
+#is showing the list of issues
+    if current_user.user_type in ('admin', 'warehouse'):
+        issues = Issues.query.order_by(Issues.id).all()
+    elif current_user.user_type in ('service'):
+        issues = Issues.query.filter(Issues.owner == current_user.username).order_by(Issues.id).all()
+    if 'edit' in request.form:
+        issue = request.form.to_dict()
+        issue_id = issue['form_id']
+        return redirect(url_for('edit_issue', issue_id=issue_id))
+
+    return render_template('issues.html', issues=issues)
 
 @app.route('/new_issue/', methods = ['GET', 'POST'])
 @login_required
@@ -159,20 +159,34 @@ def users():
         if "edit" in request.form:
             user = request.form.to_dict()
             user_id = user['form_user_id']
-            selected_user = User.query.filter_by(id=user_id).first()
-            return redirect(url_for('edit_user'))#, user_id=user_id))
+            #selected_user = User.query.filter_by(id=user_id).first()
+            return redirect(url_for('edit_user', user_id=user_id))
     return render_template('/users.html', title='Uzytkownicy', form=form, users_type_list=users_type_list, users=users)
 
-@app.route('/edit_user/', methods=['GET', 'POST'])
+@app.route('/edit_user/<user_id>', methods=['GET', 'POST'])
 @login_required
 #edit users
-def edit_user():
-    #form = UserEditForm()
-    #if current_user.user_type == 'admin':
-        #selected_user = User.query.filter_by(id=user_id).first()
-        #form.username.data = selected_user.username
-    pass
-    return render_template('/edit_user.html')#, title = 'Edycja konta użytkownika')#, form=form)
+def edit_user(user_id):
+    users_type_list = ['admin', 'warehouse', 'service', 'office', '']
+    form = UserEditForm()
+    if current_user.user_type == 'admin':
+        selected_user = User.query.filter_by(id=user_id).first()
+        if form.validate_on_submit():
+            selected_user.user_type = form.user_type.data
+            selected_user.username = form.username.data
+            selected_user.email = form.email.data
+            if form.password.data != '' and form.password2.data != '':
+                selected_user.set_password(form.password.data)
+            db.session.commit()
+            flash('Zmiany zostały zapisane')
+            return redirect(url_for('users'))
+        elif request.method == 'GET':
+            form.user_type.data = selected_user.user_type
+            form.username.data = selected_user.username
+            form.email.data = selected_user.email
+
+    return render_template('/edit_user.html', title = 'Edycja konta użytkownika',
+    form=form, users_type_list=users_type_list, user_id=user_id, selected_user=selected_user)
 
 @app.route('/add_machine/', methods=['GET', 'POST'])
 @login_required

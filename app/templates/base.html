@@ -27,8 +27,7 @@
             {% if current_user.user_type in "admin" %}
             <br><br> Narzędzia administatora:
               <a href=" {{ url_for('users') }}">Użytkownicy</a>
-              <a href=" {{ url_for('edit_user') }}">Edytuj użytkownia </a>
-              <a href=" {{ url_for('add_machine') }}">Dodaj maszynę </a>
+              <a href=" {{ url_for('add_machine') }}">Maszyny</a>
             {% endif %}
         {% endif %}
 

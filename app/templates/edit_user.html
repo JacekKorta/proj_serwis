@@ -9,6 +9,7 @@
       {% for user_type in users_type_list %}
         <option value="{{ user_type }}" selected> {{ user_type }} </option>
       {% endfor %}
+        <option value="{{ selected_user.user_type }}" selected> {{ selected_user.user_type }} </option>
     </select>
     <br>
   </p>
@@ -18,7 +19,7 @@
   </p>
   <p>
     {{ form.email.label }}
-    {{ form.email(size=16) }}<br>
+    {{ form.email(size=24) }}<br>
   </p>
   <p>
     {{ form.password.label }}
@@ -39,3 +40,4 @@
 {% if form.errors %}
 {{ form.errors }}<br>
 {% endif %}
+{% endblock %}
