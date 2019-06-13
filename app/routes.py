@@ -1,10 +1,9 @@
 from flask import render_template, flash, redirect, url_for, request
 from werkzeug.urls import url_parse
-from app import app, db
+from app import app, db, email
 from app.forms import LoginForm, IssueForm, EditIssueForm, UserForm, NewMachineForm, UserEditForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Issues, Machines
-
 
 @app.route('/')
 @app.route('/index/', methods=['GET','POST'])
@@ -79,6 +78,7 @@ def new_issue():
         db.session.add(issue)
         db.session.commit()
         flash("Dodano zgłoszenie serwisowe o nr: {}".format(issue.id))
+        email.send_new_issue(current_user, issue)
         return redirect(url_for('issues'))
     return render_template('/new_issue.html', title='Nowe zgłoszenie', form=form, machines_list=machines_list)
 

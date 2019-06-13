@@ -12,7 +12,7 @@
             {{ form.machine_name.label }}
             <select name="machine" class="selectpicker form-control">
                 {% for machine in machines_list %}
-                <option value = '{{ machine }}' selected>{{ machine.name }}</option>
+                <option value = '{{ machine.name }}' selected>{{ machine.name }}</option>
                 {% endfor %}
             </select>
             <br>

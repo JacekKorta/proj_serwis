@@ -1,4 +1,4 @@
-# Service issue manage system
+﻿# Service issue manage system
 ## App to manage service issues between sales and tech service department and the manufacturer. 
 ## Table of context
 ### Introduction
@@ -14,6 +14,8 @@ install packages:
  - flask-sqlalchemy
  - flask-migrate
  - flask-moment (convert time stamp for user local time)
+ - flask-mail
+ - pyjwt
  
 set FLASK_APP=
 ### Actual status
