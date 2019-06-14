@@ -1,4 +1,0 @@
-Cześć,
-Nowe zgłoszenie nr {{ issue.id }} pojawiło się w systemie.
-Zgłaszajacy: {{ issue.owner }}
-Kod produktu: {{ issue.part_number }}

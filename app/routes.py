@@ -1,9 +1,10 @@
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, Response, send_file
 from werkzeug.urls import url_parse
 from app import app, db, email
 from app.forms import LoginForm, IssueForm, EditIssueForm, UserForm, NewMachineForm, UserEditForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Issues, Machines
+from pandas import DataFrame
 
 @app.route('/')
 @app.route('/index/', methods=['GET','POST'])
@@ -18,6 +19,47 @@ def index():
         issue = request.form.to_dict()
         issue_id = issue['form_id']
         return redirect(url_for('edit_issue', issue_id=issue_id))
+    if 'remove' in request.form:
+        issue = request.form.to_dict()
+        issue_id = issue['form_id']
+        selected_issue = Issues.query.filter_by(id=issue_id).first()
+        db.session.delete(selected_issue)
+        db.session.commit()
+        flash('Usunięto zgłoszenie numer {}'.format(issue_id))
+        return redirect(url_for('index'))
+    if "export" in request.form:
+        col0 = []
+        col1 = []
+        col2 = []
+        col3 = []
+        col4 = []
+        col5 = []
+        col6 = []
+        issues = Issues.query.filter(~Issues.janome_status.in_(['wymienione', 'odrzucone']))
+        for item in issues:
+            col0.append(item.id)
+            col1.append(item.machine_model)
+            col2.append(item.serial_number)
+            col3.append(item.part_number)
+            col4.append(item.quantity)
+            col5.append(item.part_name)
+            col6.append(item.issue_desc)
+        df = DataFrame({'Id.': col0,
+                        'Machine model': col1,
+                        'Serial number': col2,
+                        'Part number': col3,
+                        'Qty': col4,
+                        'Part name': col5,
+                        'Issue desc.': col6
+                        })
+        df.to_excel(r'app\raports\waranty_parts_XX.XX.XXXX.xlsx', sheet_name='waranty_parts1', index=False)
+        #flash(file)
+        return send_file(r'raports\waranty_parts_XX.XX.XXXX.xlsx',attachment_filename='waranty_parts_XX.XX.XXXX.xlsx', as_attachment=True)
+
+    if "set_done" in request.form:
+        issues = Issues.query.filter(~Issues.janome_status.in_(['wymienione', 'odrzucone']))
+        pass
+
     return render_template('index.html', issues=issues, title='Strona główna', version='0.01')
 
 @app.route('/login/', methods=['GET', 'POST'])
@@ -54,6 +96,14 @@ def issues():
         issue = request.form.to_dict()
         issue_id = issue['form_id']
         return redirect(url_for('edit_issue', issue_id=issue_id))
+    if 'remove' in request.form:
+        issue = request.form.to_dict()
+        issue_id = issue['form_id']
+        selected_issue = Issues.query.filter_by(id=issue_id).first()
+        db.session.delete(selected_issue)
+        db.session.commit()
+        flash('Usunięto zgłoszenie numer {}'.format(issue_id))
+        return redirect(url_for('issues'))
 
     return render_template('issues.html', issues=issues)
 

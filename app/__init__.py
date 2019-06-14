@@ -6,6 +6,8 @@ from flask_login import LoginManager
 from flask_moment import Moment
 from flask_mail import Mail
 
+
+
 app = Flask(__name__)
 app.config.from_object(Config)
 db = SQLAlchemy(app)

@@ -1,3 +1,19 @@
+<table border="1">
+    <tr><td>Co chcesz zrobić?</td></tr>
+    <tr>
+        <td>Exportuj dane do pliku</td>
+        <form action="" method="post">
+          <td><input type="submit" name="export" value="Exportuj"> </td>
+        </form>
+    </tr>
+    <tr>
+        <td>Ustaw wszystkie jako "Zgłoszone"</td>
+        <form action="" method="post">
+          <td><input type="submit" name="set_done" value="Zmień"> </td>
+        </form>
+    </tr>
+</table><br><hr><br>
+
 <table border =1>
     <tr>
         <td>Data</td>
@@ -46,6 +62,7 @@
             <input type="hidden" name="form_janome_status" value="{{ issue.janome_status }}">
             <input type="hidden" name="form_comment" value="{{ issue.comment }}"> #}
             <td><input type="submit" name="edit" value="Zmień"></td>
+            <td><input type="submit" onclick="return confirm('Czy na pewno chcesz usunąć ten wpis?')" name="remove" value="Usuń"> </td>
         </form>
 
     </tr>
