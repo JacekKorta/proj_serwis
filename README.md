@@ -15,7 +15,8 @@ install packages:
  - flask-migrate
  - flask-moment (convert time stamp for user local time)
  - flask-mail
- - pyjwt
+ - pandas
+ - openpyxl
  
 set FLASK_APP=
 ### Actual status
