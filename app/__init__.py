@@ -17,4 +17,4 @@ login.login_view ='login'
 moment = Moment(app)
 mail = Mail(app)
 
-from app import routes, models
+from app import routes, models, errors

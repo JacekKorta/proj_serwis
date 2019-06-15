@@ -62,7 +62,7 @@
             <input type="hidden" name="form_janome_status" value="{{ issue.janome_status }}">
             <input type="hidden" name="form_comment" value="{{ issue.comment }}"> #}
             <td><input type="submit" name="edit" value="Zmień"></td>
-            <td><input type="submit" onclick="return confirm('Czy na pewno chcesz usunąć ten wpis?')" name="remove" value="Usuń"> </td>
+            <td><input type="submit" onclick="return confirm('Czy na pewno chcesz usunąć wpis nr {{ issue.id }}?')" name="remove" value="Usuń"> </td>
         </form>
 
     </tr>

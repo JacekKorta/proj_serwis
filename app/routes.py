@@ -7,7 +7,7 @@ from app.models import User, Issues, Machines
 from pandas import DataFrame
 
 @app.route('/')
-@app.route('/index/', methods=['GET','POST'])
+@app.route('/index/', methods=['GET', 'POST'])
 @login_required
 def index():
 #strona główna z niezakończonymi zgłoszeniami, dla danego użytkownika [PL]
@@ -53,12 +53,14 @@ def index():
                         'Issue desc.': col6
                         })
         df.to_excel(r'app\raports\waranty_parts_XX.XX.XXXX.xlsx', sheet_name='waranty_parts1', index=False)
-        #flash(file)
         return send_file(r'raports\waranty_parts_XX.XX.XXXX.xlsx',attachment_filename='waranty_parts_XX.XX.XXXX.xlsx', as_attachment=True)
 
     if "set_done" in request.form:
         issues = Issues.query.filter(~Issues.janome_status.in_(['wymienione', 'odrzucone']))
-        pass
+        for item in issues:
+            item.janome_status = 'Zgłoszone'
+            db.session.commit()
+        #return render_template(index.html)
 
     return render_template('index.html', issues=issues, title='Strona główna', version='0.01')
 
@@ -88,7 +90,7 @@ def logout():
 @login_required
 def issues():
 #is showing the list of issues
-    if current_user.user_type in ('admin', 'warehouse'):
+    if current_user.user_type in ('admin', 'warehouse', "office"):
         issues = Issues.query.order_by(Issues.id).all()
     elif current_user.user_type in ('service'):
         issues = Issues.query.filter(Issues.owner == current_user.username).order_by(Issues.id).all()
@@ -134,12 +136,11 @@ def new_issue():
 
 @app.route('/edit_issue/<issue_id>', methods=['GET', 'POST'])
 @login_required
-
 def edit_issue(issue_id):
     current_issue = Issues.query.filter_by(id=issue_id).first()
     machines_list = Machines.query.order_by(Machines.name).all()
     form = EditIssueForm()
-    if current_user.username == current_issue.owner:
+    if (current_user.username == current_issue.owner) or current_user.user_type in ("admin", "warehouse", "office"):
         if form.validate_on_submit():
             current_issue.owner = form.owner.data
             current_issue.machine_model = form.machine_name.data
@@ -187,11 +188,11 @@ def users():
     if current_user.user_type == 'admin':
         form = UserForm()
         if form.validate_on_submit():
-            users_list = User.query.order_by(User.username).all()
+            #users_list = User.query.order_by(User.username).all()
             user = User(
-            username = form.username.data,
-            email = form.email.data,
-            user_type = request.form.get('user_type')
+            username=form.username.data,
+            email=form.email.data,
+            user_type=request.form.get('user_type')
             )
             user.set_password(form.password.data)
             db.session.add(user)
@@ -234,7 +235,6 @@ def edit_user(user_id):
             form.user_type.data = selected_user.user_type
             form.username.data = selected_user.username
             form.email.data = selected_user.email
-
     return render_template('/edit_user.html', title = 'Edycja konta użytkownika',
     form=form, users_type_list=users_type_list, user_id=user_id, selected_user=selected_user)
 
@@ -261,4 +261,4 @@ def add_machine():
             return redirect(url_for('add_machine'))
         return(render_template('add_machine.html', title="Dodaj maszynę", form=form, machine_list=machine_list))
     else:
-        return redirect(url_for('index')) #nieuprawniony dostęp
+        return redirect(url_for('index')) #nieuprawniony dostęp TODO

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Ups... 404 Error </h1>
+    <img src="{{url_for('static', filename='404.png')}}" width="326" height="267"/><br>
+    <p1>Jesli uważasz, że powinno tu być coś innego to skontaktuj się z administratorem.</p1><br>
+    <p1>Niezapomnij podać dokładnego adresu strony na której wystąpił błąd.</p1>
+    <p><a href="{{ url_for('index') }}">Powrót do strony głównej</a></p>
+{% endblock %}

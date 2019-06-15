@@ -24,7 +24,7 @@
           <td>{{ machine.id }}</td>
           <td>{{ machine.name }} </td>
           <input type="hidden" name="form_machine_id" value="{{ machine.id }}">
-          <td><input type="submit" name="remove" value="usuń"</td>
+          <td><input type="submit" onclick="return confirm('Czy na pewno chcesz usunąć maszynę {{ machine.name }}?')" name="remove" value="usuń"</td>
         </form>
     </tr>
       {% endfor %}
