@@ -6,3 +6,4 @@ logs/
 venv/
 app.db
 .idea/
+*.xlsx

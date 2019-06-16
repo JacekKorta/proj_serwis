@@ -1,20 +1,22 @@
 <table border =1>
     <tr>
-        <td>Data</td>
-        <td>Zgłaszajacy</td>
-        <td>Model maszyny</td>
-        <td>Numer seryjny</td>
-        <td>Numer części</td>
-        <td>Ilość</td>
-        <td>Nazwa części</td>
-        <td>Opis usterki</td>
-        <td>Status dostarczenia do magazynu</td>
-        <td>Status wymiany klientowi</td>
+        <th>Id</th>
+        <th>Data</th>
+        <th>Zgłaszajacy</th>
+        <th>Model maszyny</th>
+        <th>Numer seryjny</th>
+        <th>Numer części</th>
+        <th>Ilość</th>
+        <th>Nazwa części</th>
+        <th>Opis usterki</th>
+        <th>Status dostarczenia do magazynu</th>
+        <th>Status wymiany klientowi</th>
 
     </tr>
     {% for issue in issues %}
     <tr>
         <form action="" method="post">
+            <td> {{issue.id }}</td>
             <td>{{ moment(issue.time_stamp).format('LLL') }}</td>
             <td>{{ issue.owner }}</td>
             <td>{{ issue.machine_model }}</td>

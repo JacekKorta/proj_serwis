@@ -9,7 +9,7 @@ def send_mail (subject, sender, recipients, text_body, html_body ):
     mail.send(msg)
 
 def send_new_issue(user,issue):
-    subject = 'Nowe zgłoszenie serwisowe nr {}'.format(issue.id)
+    subject = '[SERWIS] Nowe zgłoszenie serwisowe nr {}'.format(issue.id)
     admin_adres = 'eaters@o2.pl'
     warehouse_adres = 'jacek.korta@gmail.com'
     send_mail(subject,
