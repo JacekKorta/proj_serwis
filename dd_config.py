@@ -9,12 +9,12 @@ class Config(object):
         'sqlite:///' + os.path.join(basedir, 'app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    MAIL_SERVER = 'mail.draftstudio.pl'
+    MAIL_SERVER = 'your_server_adres'
     MAIL_PORT = 587
     #MAIL_USE_TLS = True
     #MAIL_USE_SSL = 1
-    MAIL_USERNAME = 'info@janome.pl'
-    MAIL_PASSWORD = 'Janome-Polska=info2194'
-    OFFICE = ['info@janome.pl']
-    WAREHOUSE = ['j.korta@janome.pl']
-    SENDER = ['info@janome.pl']
+    MAIL_USERNAME = 'username@mail.com'
+    MAIL_PASSWORD = 'your_funny_password'
+    OFFICE = ['office@mail.com']
+    WAREHOUSE = ['warehouse@mail.com']
+    SENDER = ['sender@mail.com']

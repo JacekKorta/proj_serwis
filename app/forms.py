@@ -54,3 +54,7 @@ class NewMachineForm(FlaskForm):
         machine = Machines.query.filter_by(name=machine_name.data).first()
         if machine is not None:
             raise ValidationError('Ten model maszyny jest już w bazie.')
+
+class DelayedPaymentsForm(FlaskForm):
+    clipboard_data = StringField('Dane z symfonii', validators=[DataRequired()])
+    submit = SubmitField('Przetwarzaj')

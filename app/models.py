@@ -48,6 +48,14 @@ class Machines(db.Model):
     def __repr__(self):
         return ' <id {}, Nazwa: {}>'.format(self.id, self.name)
 
+class Customers(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(36), index=True, unique=True)
+    name = db.Column(db.String(126))
+    phone_num = db.Column(db.String(20))
+    phone2_num = db.Column(db.String(20))
+    email = db.Column(db.String(48), unique=True)
+    
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))

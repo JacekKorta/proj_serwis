@@ -54,17 +54,6 @@
             <td>{{ issue.delivery_time }}</td>
             <td>{{ issue.comment }}</td>
             <input type="hidden" name="form_id" value="{{ issue.id }}">
-           {# <input type="hidden" name="form_owner" value="{{ issue.owner }}">
-            <input type="hidden" name="form_machines_model" value="{{ issue.machines_model }}">
-            <input type="hidden" name="form_serial_number" value="{{ issue.serial_number }}">
-            <input type="hidden" name="form_part_number" value="{{ issue.part_number }}">
-            <input type="hidden" name="form_part_quantity" value="{{ issue.quantity }}">
-            <input type="hidden" name="form_part_name" value="{{ issue.part_name }}">
-            <input type="hidden" name="form_issue_desc" value="{{ issue.issue_desc }}">
-            <input type="hidden" name="form_where_is_part" value="{{ issue.where_is_part }}">
-            <input type="hidden" name="form_exchange_status" value="{{ issue.exchange_status }}">
-            <input type="hidden" name="form_janome_status" value="{{ issue.janome_status }}">
-            <input type="hidden" name="form_comment" value="{{ issue.comment }}"> #}
             <td><input type="submit" name="edit" value="Zmień"></td>
             <td><input type="submit" onclick="return confirm('Czy na pewno chcesz usunąć wpis nr {{ issue.id }}?')" name="remove" value="Usuń"> </td>
         </form>

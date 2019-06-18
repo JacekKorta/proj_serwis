@@ -2,8 +2,6 @@
 {% block content %}
 
 <hr>
-<p> tu będą informacje o zmianach w obserwowanych zgłsozeniach [USUN]</p>
-
     {% if current_user.user_type in "admin" %}
         {% include "admin_view.html" %}
     {% elif current_user.user_type in "warehouse" %}

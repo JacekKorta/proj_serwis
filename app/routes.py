@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request, Response, send_file
 from werkzeug.urls import url_parse
 from app import app, db, email
-from app.forms import LoginForm, IssueForm, EditIssueForm, UserForm, NewMachineForm, UserEditForm
+from app.forms import LoginForm, IssueForm, EditIssueForm, UserForm, NewMachineForm, UserEditForm, DelayedPaymentsForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Issues, Machines
 from pandas import DataFrame
@@ -28,6 +28,7 @@ def index():
         flash('Usunięto zgłoszenie numer {}'.format(issue_id))
         return redirect(url_for('index'))
     if "export" in request.form:
+        #wywalić do osobnego modułu dodać do zgłoszeń
         col0 = []
         col1 = []
         col2 = []
@@ -262,3 +263,11 @@ def add_machine():
         return(render_template('add_machine.html', title="Dodaj maszynę", form=form, machine_list=machine_list))
     else:
         return redirect(url_for('index')) #nieuprawniony dostęp TODO
+
+@app.route('/payments/', methods=['GET','POST'])
+@login_required
+
+def payments():
+    form=DelayedPaymentsForm()
+    pass
+    return (render_template('payments.html', title = 'Płatności', form=form))
