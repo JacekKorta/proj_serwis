@@ -35,7 +35,7 @@
 </head>
 <body>
     <div>
-        <H2>Zgłoszenia serwisowe ETI 0.01</H2>
+        <H2>Zgłoszenia serwisowe ETI {{ version }}</H2>
         {% if current_user.username %}
           <H3>Zalogowany jako: {{ current_user.username }} ({{ current_user.user_type }})</H3><br>
         {% endif %}
@@ -53,6 +53,10 @@
         <br><br> Narzędzia administatora:
           <a href=" {{ url_for('users') }}">Użytkownicy</a>
           <a href=" {{ url_for('add_machine') }}">Maszyny</a>
+        {% endif %}
+        {% if current_user.user_type in "admin" or "office" %}
+        <br><br> Płatności:
+        <a href=" {{ url_for('payments') }}">Płatności </a>
         {% endif %}
         {% endif %}
 

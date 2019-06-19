@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request, Response, send_file
 from werkzeug.urls import url_parse
-from app import app, db, email
+from app import app, db, email, payments
 from app.forms import LoginForm, IssueForm, EditIssueForm, UserForm, NewMachineForm, UserEditForm, DelayedPaymentsForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Issues, Machines
@@ -63,7 +63,7 @@ def index():
             db.session.commit()
         #return render_template(index.html)
 
-    return render_template('index.html', issues=issues, title='Strona główna', version='0.01')
+    return render_template('index.html', issues=issues, title='Strona główna', version='0.02')
 
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
@@ -108,7 +108,7 @@ def issues():
         flash('Usunięto zgłoszenie numer {}'.format(issue_id))
         return redirect(url_for('issues'))
 
-    return render_template('issues.html', issues=issues)
+    return render_template('issues.html', issues=issues, title='Zgłoszenia')
 
 @app.route('/new_issue/', methods = ['GET', 'POST'])
 @login_required
@@ -266,8 +266,15 @@ def add_machine():
 
 @app.route('/payments/', methods=['GET','POST'])
 @login_required
-
 def payments():
-    form=DelayedPaymentsForm()
-    pass
-    return (render_template('payments.html', title = 'Płatności', form=form))
+    form = DelayedPaymentsForm()
+    if current_user.user_type in ('admin', "office"):
+        if form.validate_on_submit():
+            data = form.clipboard_data.data
+            #payments.delayed_payments(data)
+            x = payments.test()
+            flash('przetworzono')
+            flash(x)
+            #data = request.form
+            #return redirect(url_for('payments'))
+        return (render_template('payments.html', title='Płatności', form=form))

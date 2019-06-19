@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Płatności</h2>
+<form action="" method = "post">
+    {{ form.hidden_tag() }}
+    <p>
+      {{ form.clipboard_data.label }}
+      {{ form.clipboard_data(size=24) }}
+    </p>
+    <p>
+      {{ form.submit }}
+    </p>
+</form>
+
+
+{% endblock %}
