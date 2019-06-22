@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request, Response, send_file
 from werkzeug.urls import url_parse
-from app import app, db, email, payments
+from app import app, db, email, payments_mod
 from app.forms import LoginForm, IssueForm, EditIssueForm, UserForm, NewMachineForm, UserEditForm, DelayedPaymentsForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Issues, Machines
@@ -268,13 +268,11 @@ def add_machine():
 @login_required
 def payments():
     form = DelayedPaymentsForm()
+    delayed_obj = {}
     if current_user.user_type in ('admin', "office"):
         if form.validate_on_submit():
             data = form.clipboard_data.data
             #payments.delayed_payments(data)
-            x = payments.test()
-            flash('przetworzono')
-            flash(x)
-            #data = request.form
-            #return redirect(url_for('payments'))
-        return (render_template('payments.html', title='Płatności', form=form))
+            delayed_obj = payments_mod.delayed_payments(data)
+            return (render_template('payments.html', title='Płatności', form=form, delayed_obj=delayed_obj))
+        return (render_template('payments.html', title='Płatności', form=form, delayed_obj=delayed_obj))

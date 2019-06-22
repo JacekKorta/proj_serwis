@@ -6,12 +6,42 @@
     {{ form.hidden_tag() }}
     <p>
       {{ form.clipboard_data.label }}
-      {{ form.clipboard_data(size=24) }}
+      {{ form.clipboard_data(cols=50, rows =5) }}
     </p>
     <p>
       {{ form.submit }}
     </p>
 </form>
+
+  {% for item in delayed_obj.keys() %}
+    <table border = 1 id="issues">
+      {#<td colspan="4"> {{ item }} </td> #}
+      <caption>{{ item }}</caption>
+
+      <tr>
+        <th> nr Faktury </th>
+        <th> data wystawienia </th>
+        <th> termin płatności </th>
+        <th> pozostało do zapłaty </th>
+      </tr>
+      {% for invoice in delayed_obj[item] %}
+      <tr>
+        {% if invoice[0] %}
+        <td> {{ invoice[0] }} </td>
+        <td> {{ invoice[1] }} </td>
+        <td> {{ invoice[2] }} </td>
+        <td> {{ invoice[3] }} zł </td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+      <tr>
+        <td colspan="3">Razem: </td>
+        <td> {{ delayed_obj[item][-1] }} zł </td>
+      </tr>
+      <tr><td colspan="4" align="center" ><input type="submit" name="send" value="Wyślij przypomnienie"></td></tr>
+    </table><br>
+  {% endfor %}
+
 
 
 {% endblock %}

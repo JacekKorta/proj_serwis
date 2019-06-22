@@ -56,5 +56,5 @@ class NewMachineForm(FlaskForm):
             raise ValidationError('Ten model maszyny jest już w bazie.')
 
 class DelayedPaymentsForm(FlaskForm):
-    clipboard_data = StringField('Dane z symfonii', validators=[DataRequired()])
+    clipboard_data = TextAreaField('Dane z symfonii', validators=[DataRequired()])
     submit = SubmitField('Przetwarzaj')
