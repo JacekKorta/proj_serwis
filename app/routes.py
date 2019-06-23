@@ -272,7 +272,12 @@ def payments():
     if current_user.user_type in ('admin', "office"):
         if form.validate_on_submit():
             data = form.clipboard_data.data
-            #payments.delayed_payments(data)
             delayed_obj = payments_mod.delayed_payments(data)
+            return (render_template('payments.html', title='Płatności', form=form, delayed_obj=delayed_obj))
+        if "remove" in request.form:
+            pass
+        if "send" in request.form:
+            new_data = request.form.to_dict()
+            flash(delayed_obj)
             return (render_template('payments.html', title='Płatności', form=form, delayed_obj=delayed_obj))
         return (render_template('payments.html', title='Płatności', form=form, delayed_obj=delayed_obj))
