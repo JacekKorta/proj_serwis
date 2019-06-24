@@ -12,23 +12,22 @@
       {{ form.submit }}
     </p>
 </form>
+{% for item in delayed_dict.keys() %}
 <form action="" method="post">
   {{ form.hidden_tag() }}
-  {% for item in delayed_obj.keys() %}
-  <input type="hidden" name="form_delayed_obj" value="{{ delayed_obj }}">
     <table border = 1 id="issues">
       <caption>{{ item }}</caption>
+      <input type="hidden" name="form_delayed_dict" value="{{ item }}">
       <tr>
         <th> nr Faktury </th>
         <th> data wystawienia </th>
         <th> termin płatności </th>
         <th> pozostało do zapłaty </th>
       </tr>
-      {% for invoice in delayed_obj[item] %}
-
+      {% for invoice in delayed_dict[item] %}
         <tr>
           {% if invoice[0] %}
-          <input type="hidden" name="form_invoice" value="{{ invoice }}">
+          {#<input type="hidden" name="form_invoice" value="{{ invoice }}">#}
           <td> {{ invoice[0] }} </td>
           <td> {{ invoice[1] }} </td>
           <td> {{ invoice[2] }} </td>
@@ -38,14 +37,15 @@
         {% endfor %}
         <tr>
           <td colspan="3">Razem: </td>
-          <td> {{ delayed_obj[item][-1] }} zł </td>
+          <td> {{ delayed_dict[item][-1] }} zł </td>
         </tr>
         <tr><td colspan="4" align="center" >
           <input type="submit" name="send" value="Wyślij przypomnienie">
           <input type="submit" name="remove" value="Usuń z listy">
         </td></tr>
-      </form>
     </table><br>
+  </form>
+
   {% endfor %}
 
 

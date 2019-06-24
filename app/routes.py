@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, request, Response, send_file
+from flask import render_template, flash, redirect, url_for, request, Response, send_file, session
 from werkzeug.urls import url_parse
 from app import app, db, email, payments_mod
 from app.forms import LoginForm, IssueForm, EditIssueForm, UserForm, NewMachineForm, UserEditForm, DelayedPaymentsForm
@@ -173,7 +173,6 @@ def edit_issue(issue_id):
             form.comment.data = current_issue.comment
             form.customer_delivery_time.data = current_issue.customer_delivery_time
             form.delivery_time.data = current_issue.delivery_time
-
         return render_template(
             'edit_issue.html', issue_id=issue_id, title='Edytycja zgłoszenia', form=form, machines_list=machines_list, current_issue=current_issue)
     else:
@@ -221,7 +220,8 @@ def users():
 def edit_user(user_id):
     users_type_list = ['admin', 'warehouse', 'service', 'office', '']
     form = UserEditForm()
-    if current_user.user_type == 'admin':
+    #if current_user.user_type == 'admin':
+    if (current_user.id == int(user_id)) or (current_user.user_type == "admin"):
         selected_user = User.query.filter_by(id=user_id).first()
         if form.validate_on_submit():
             selected_user.user_type = form.user_type.data
@@ -236,8 +236,12 @@ def edit_user(user_id):
             form.user_type.data = selected_user.user_type
             form.username.data = selected_user.username
             form.email.data = selected_user.email
+    else:
+        flash('Twoje id {} nie jest równe {}'.format(current_user.id, user_id))
+        return redirect(url_for('index'))#nieuprawniony dostęp
     return render_template('/edit_user.html', title = 'Edycja konta użytkownika',
     form=form, users_type_list=users_type_list, user_id=user_id, selected_user=selected_user)
+
 
 @app.route('/add_machine/', methods=['GET', 'POST'])
 @login_required
@@ -268,16 +272,31 @@ def add_machine():
 @login_required
 def payments():
     form = DelayedPaymentsForm()
-    delayed_obj = {}
     if current_user.user_type in ('admin', "office"):
+        delayed_dict = {}
+        data = ''
         if form.validate_on_submit():
+        #if request.method == 'POST':
             data = form.clipboard_data.data
-            delayed_obj = payments_mod.delayed_payments(data)
-            return (render_template('payments.html', title='Płatności', form=form, delayed_obj=delayed_obj))
+            delayed_dict = payments_mod.delayed_payments(data)
+            session["delayed_dict"] = delayed_dict
+            #return (render_template('payments.html', title='Płatności', form=form, delayed_dict=delayed_dict))
+        #elif request.method == 'GET':
         if "remove" in request.form:
-            pass
+            delayed_dict = session["delayed_dict"]
+            request_data = request.form.to_dict()
+            selected_customer = request_data['form_delayed_dict']
+            del delayed_dict[selected_customer]
+            session["delayed_dict"] = delayed_dict
         if "send" in request.form:
-            new_data = request.form.to_dict()
-            flash(delayed_obj)
-            return (render_template('payments.html', title='Płatności', form=form, delayed_obj=delayed_obj))
-        return (render_template('payments.html', title='Płatności', form=form, delayed_obj=delayed_obj))
+            delayed_dict = session["delayed_dict"]
+            flash('send')
+            request_data = request.form.to_dict()
+            flash(request_data['form_delayed_dict'])
+            selected_customer = request_data['form_delayed_dict']
+            flash(selected_customer)
+            del delayed_dict[selected_customer]
+            session["delayed_dict"] = delayed_dict
+            flash(delayed_dict)
+            #return (render_template('payments.html', title='Płatności', form=form, delayed_dict=delayed_dict))
+        return (render_template('payments.html', title='Płatności', form=form, delayed_dict=delayed_dict))

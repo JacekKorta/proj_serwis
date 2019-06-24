@@ -4,22 +4,31 @@
 <form action="" method = "post" novalidate>
   {{ form.hidden_tag() }}
   <p>
-    {{ form.user_type.label }}
-      <select name="user_type" class="selectpicker form-control">
-      {% for user_type in users_type_list %}
-        <option value="{{ user_type }}" selected> {{ user_type }} </option>
-      {% endfor %}
-        <option value="{{ selected_user.user_type }}" selected> {{ selected_user.user_type }} </option>
-    </select>
-    <br>
+    {% if current_user.user_type in "admin" %}
+      {{ form.user_type.label }}
+        <select name="user_type" class="selectpicker form-control">
+        {% for user_type in users_type_list %}
+          <option value="{{ user_type }}" selected> {{ user_type }} </option>
+        {% endfor %}
+          <option value="{{ selected_user.user_type }}" selected> {{ selected_user.user_type }} </option>
+      </select>
+    {% endif %}<br>
   </p>
   <p>
     {{ form.username.label }}
-    {{ form.username(size=16) }}<br>
+    {% if current_user.user_type in "admin" %}
+      {{ form.username(size=16) }}
+    {% else %}
+      {{ form.username(size=16, readonly=True) }}
+    {% endif %}<br>
   </p>
   <p>
     {{ form.email.label }}
-    {{ form.email(size=24) }}<br>
+    {% if current_user.user_type in "admin" %}
+      {{ form.email(size=24) }}
+    {% else %}
+      {{ form.email(size=24, readonly=True) }}
+    {% endif %}<br>
   </p>
   <p>
     {{ form.password.label }}

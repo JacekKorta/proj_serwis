@@ -6,8 +6,13 @@
         {{ form.hidden_tag() }}
         <p>
             {{ form.owner.label }}
-            {{ form.owner(size=12, readonly=True) }}
+            {% if current_user.user_type in "admin" %}
+              {{ form.owner(size=12) }}
+            {% else %}
+              {{ form.owner(size=12, readonly=True) }}
+            {% endif %}
         </p>
+        <p>
             {{ form.machine_name.label }}
             <select name="machine_name" class="selectpicker form-control">
                 {% for machine in machines_list %}
@@ -17,7 +22,6 @@
             </select>
             <br>
         </p>
-            {# {{ form.machine_name }} #}
         <p>
             {{ form.serial_number.label }}
             {{ form.serial_number(size=12) }}<br>
