@@ -188,7 +188,6 @@ def users():
     if current_user.user_type == 'admin':
         form = UserForm()
         if form.validate_on_submit():
-            #users_list = User.query.order_by(User.username).all()
             user = User(
             username=form.username.data,
             email=form.email.data,
@@ -210,7 +209,6 @@ def users():
         if "edit" in request.form:
             user = request.form.to_dict()
             user_id = user['form_user_id']
-            #selected_user = User.query.filter_by(id=user_id).first()
             return redirect(url_for('edit_user', user_id=user_id))
     return render_template('/users.html', title='Uzytkownicy', form=form, users_type_list=users_type_list, users=users)
 
@@ -231,7 +229,10 @@ def edit_user(user_id):
                 selected_user.set_password(form.password.data)
             db.session.commit()
             flash('Zmiany zostały zapisane')
-            return redirect(url_for('users'))
+            if current_user.user_type in "admin":
+                return redirect(url_for('users'))
+            else:
+                return(redirect(url_for('index')))
         elif request.method == 'GET':
             form.user_type.data = selected_user.user_type
             form.username.data = selected_user.username

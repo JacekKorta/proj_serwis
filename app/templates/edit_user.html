@@ -12,6 +12,8 @@
         {% endfor %}
           <option value="{{ selected_user.user_type }}" selected> {{ selected_user.user_type }} </option>
       </select>
+    {% else %}
+      <input type="hidden" name="user_type" value="{{ current_user.user_type }}">
     {% endif %}<br>
   </p>
   <p>

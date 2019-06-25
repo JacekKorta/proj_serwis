@@ -4,7 +4,7 @@
 <hr>
     {% if current_user.user_type in "admin" %}
         {% include "admin_view.html" %}
-    {% elif current_user.user_type in "warehouse" %}
+    {% elif current_user.user_type in ("warehouse", "office") %}
         {% include "warehouse_view.html" %}
     {% elif current_user.user_type in "service" %}
         {% include "service_view.html" %}
