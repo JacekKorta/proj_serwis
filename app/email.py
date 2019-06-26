@@ -10,8 +10,8 @@ def send_mail (subject, sender, recipients, text_body, html_body ):
 
 def send_new_issue(user,issue):
     subject = '[SERWIS] Nowe zgłoszenie serwisowe nr {}'.format(issue.id)
-    admin_adres = 'admin@address.com'
-    warehouse_adres = 'warehouse@address.com'
+    admin_adres = app.config['ADMIN'][0]
+    warehouse_adres = app.config['WAREHOUSE'][0]
     send_mail(subject,
             sender=app.config['SENDER'][0],
             recipients=[user.email,admin_adres,warehouse_adres],
