@@ -15,9 +15,6 @@ class delayed_obj(customer_name, invoices, total_delayed_value):
 
 def delayed_payments(data):
     customers = {}
-    obj_list =[]
-    #for line in data:
-        #print(line)
     data_list = data.split('\n')
     while '' in data_list:
         data_list.remove('')

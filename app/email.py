@@ -17,3 +17,12 @@ def send_new_issue(user,issue):
             recipients=[user.email,admin_adres,warehouse_adres],
             text_body= render_template('email/email_new_issue.txt', issue=issue),
             html_body = render_template('email/email_new_issue.html', issue=issue))
+
+def send_delayed_payments(customer, data):
+    subject = '{} - Zaległe płatnosci dla ETI'.format(customer.code)
+    office = app.config['OFFICE'][0]
+    send_mail(subject,
+              sender=office,
+              recipients=[office, customer.email],
+              text_body=render_template('email/email_delayed_payments.txt', data=data),
+              html_body=render_template('email/email_delayed_payments.html', data=data))

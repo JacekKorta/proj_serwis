@@ -3,7 +3,7 @@ from werkzeug.urls import url_parse
 from app import app, db, email, payments_mod
 from app.forms import LoginForm, IssueForm, EditIssueForm, UserForm, NewMachineForm, UserEditForm, DelayedPaymentsForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User, Issues, Machines
+from app.models import User, Issues, Machines, Customers
 from pandas import DataFrame
 
 @app.route('/')
@@ -291,13 +291,15 @@ def payments():
             session["delayed_dict"] = delayed_dict
         if "send" in request.form:
             delayed_dict = session["delayed_dict"]
-            flash('send')
+            #flash('send')
             request_data = request.form.to_dict()
-            flash(request_data['form_delayed_dict'])
-            selected_customer = request_data['form_delayed_dict']
-            flash(selected_customer)
-            del delayed_dict[selected_customer]
+            #flash(request_data['form_delayed_dict'])
+            selected_customer_code = request_data['form_delayed_dict']
+            selected_customer = Customers.query.filter_by(code=selected_customer_code).first()
+            #flash(delayed_dict[selected_customer_code])
+            email.send_delayed_payments(selected_customer, delayed_dict[selected_customer_code])
+            del delayed_dict[selected_customer_code]
             session["delayed_dict"] = delayed_dict
-            flash(delayed_dict)
+            #flash(delayed_dict)
             #return (render_template('payments.html', title='Płatności', form=form, delayed_dict=delayed_dict))
         return (render_template('payments.html', title='Płatności', form=form, delayed_dict=delayed_dict))
