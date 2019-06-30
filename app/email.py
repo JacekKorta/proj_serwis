@@ -23,6 +23,6 @@ def send_delayed_payments(customer, data):
     office = app.config['OFFICE'][0]
     send_mail(subject,
               sender=office,
-              recipients=[customer.email],#[office, customer.email],
+              recipients=[office, customer.email],
               text_body=render_template('email/email_delayed_payments.txt', data=data),
               html_body=render_template('email/email_delayed_payments.html', data=data))
