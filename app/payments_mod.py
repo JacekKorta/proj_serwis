@@ -11,6 +11,7 @@ class delayed_obj(customer_name, invoices, total_delayed_value):
     self.customer_name = customer_name
     self.invoices = invoices
     self.total_delayed_value = total_delayed_value
+    ???
 '''
 
 def delayed_payments(data):
