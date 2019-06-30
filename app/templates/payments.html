@@ -12,6 +12,11 @@
       {{ form.submit }}
     </p>
 </form>
+<form action="" method = "post">
+  {{ form.hidden_tag() }}
+  <input type="submit" name="send_to_all" value="Wyslij do wszystkich">
+</form>
+
 {% for item in delayed_dict.keys() %}
 <form action="" method="post">
   {{ form.hidden_tag() }}
@@ -19,10 +24,10 @@
       <caption>{{ item }}</caption>
       <input type="hidden" name="form_delayed_dict" value="{{ item }}">
       <tr>
-        <th> nr Faktury </th>
-        <th> data wystawienia </th>
-        <th> termin płatności </th>
-        <th> pozostało do zapłaty </th>
+        <th> Nr faktury </th>
+        <th> Data wystawienia </th>
+        <th> Termin płatności </th>
+        <th> Pozostało do zapłaty </th>
       </tr>
       {% for invoice in delayed_dict[item] %}
         <tr>

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Dodaj nowego klienta:</h3>
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.code.label }}<br>
+        {{ form.code(size=32) }}
+    </p>
+    <p>
+        {{ form.name.label }}<br>
+        {{ form.name(size=32) }}
+    </p>
+    <p>
+        {{ form.email.label }}<br>
+        {{ form.email(size=32) }}
+    </p>
+    <p>
+        {{ form.phone_num.label }}<br>
+        {{ form.phone_num(size=32) }}
+    </p>
+    <p>
+        {{ form.phone2_num.label }}<br>
+        {{ form.phone2_num(size=32) }}
+    </p>
+    <p> {{ form.submit }}</p><hr>
+</form>
+
+{% if form.errors %}
+{{ form.errors }}<br>
+{% endif %}
+<h3>Lista klientów</h3>
+<table border = 1>
+  <tr>
+    <td>Id</td>
+    <td>Kod</td>
+    <td>Nazwa</td>
+    <td>Email</td>
+    <td>Telefon 1</td>
+    <td>Telefon 2</td>
+  </tr>
+{% for customer in customers %}
+    <form action="" method="post">
+    {{ form.hidden_tag() }}
+    <tr>
+        <td> {{ customer.id }}</td>
+        <td> {{ customer.code }}</td>
+        <td> {{ customer.name }}</td>
+        <td> {{ customer.email }}</td>
+        <td> {{ customer.phone_num }}</td>
+        <td> {{ customer.phone2_num }}</td>
+        <input type="hidden" name="form_customer_id" value="{{ customer.id }}">
+        <td><input type="submit" name="edit" value="edytuj"></td>
+        <td><input type="submit" onclick="return confirm('Czy na pewno chcesz usunąć użytkownika {{ customer.code }}?')" name="remove" value="usuń"</td>
+    </tr>
+    </form>
+{% endfor %}
+</table>
+
+{% endblock %}

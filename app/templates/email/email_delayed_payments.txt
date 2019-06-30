@@ -1,0 +1,32 @@
+
+Dzień dobry,
+poniżej znajduje się zestawienie zaległych płatności:
+
+{{ customer }}
+{% for invoice in data %}
+{% if invoice[0] %}
+Nr faktury: {{ invoice[0] }}
+Data wystawienia: {{ invoice[1] }}
+Termin płatności: {{ invoice[2] }}
+Pozostało do zapłaty: {{ invoice[3] }} zł
+{% endif %}
+
+{% endfor %}
+Razem do zapłaty {{ data[-1] }} zł
+
+Prosimy o terminowe regulowanie należności.
+
+Jednocześnie przypominamy iż aktualne warunki sprzedaży (rabaty, terminy) zakładają terminowe opłacanie należności.
+W przypadku kolejnych opóźnień w płatnościach będziemy zmuszeni do zmiany warunków współpracy.
+
+Wiadomość wygenerowana automatycznie.
+
+Jeśli wymienione faktury zostały niedawno opłacone, zignoruj tę wiadomość.
+Jeśli wymienione faktury są już dawno opłacone, proszę skontaktuj się z nami.
+
+Pozdrawiam serdecznie,
+Dział księgowości
+ETI Sp. z o.o. spółka komandytowa
+ul. Poznańska 75, 60-185 Skórzewo
+tel. +48 798 709 244
+www.janome.pl   www.elna.pl

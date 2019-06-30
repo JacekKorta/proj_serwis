@@ -1,10 +1,11 @@
 from flask import render_template, flash, redirect, url_for, request, Response, send_file, session
 from werkzeug.urls import url_parse
 from app import app, db, email, payments_mod
-from app.forms import LoginForm, IssueForm, EditIssueForm, UserForm, NewMachineForm, UserEditForm, DelayedPaymentsForm
+from app.forms import LoginForm, IssueForm, EditIssueForm, UserForm, NewMachineForm, UserEditForm, DelayedPaymentsForm, CustomerForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Issues, Machines, Customers
 from pandas import DataFrame
+
 
 @app.route('/')
 @app.route('/index/', methods=['GET', 'POST'])
@@ -275,14 +276,24 @@ def payments():
     form = DelayedPaymentsForm()
     if current_user.user_type in ('admin', "office"):
         delayed_dict = {}
-        data = ''
         if form.validate_on_submit():
         #if request.method == 'POST':
             data = form.clipboard_data.data
             delayed_dict = payments_mod.delayed_payments(data)
             session["delayed_dict"] = delayed_dict
-            #return (render_template('payments.html', title='Płatności', form=form, delayed_dict=delayed_dict))
         #elif request.method == 'GET':
+        if "send_to_all" in request.form:
+            delayed_dict = session["delayed_dict"]
+            for customer_code in delayed_dict.keys():
+                try:
+                    selected_customer = Customers.query.filter_by(code=customer_code).first()
+                    data = delayed_dict[customer_code]
+                    email.send_delayed_payments(selected_customer, data)
+                    flash('Wysłano do {}'.format(customer_code))
+                    del delayed_dict[customer_code]
+                except:
+                    flash('Nie udało się wysłać do {}'.format(customer_code))
+
         if "remove" in request.form:
             delayed_dict = session["delayed_dict"]
             request_data = request.form.to_dict()
@@ -291,15 +302,70 @@ def payments():
             session["delayed_dict"] = delayed_dict
         if "send" in request.form:
             delayed_dict = session["delayed_dict"]
-            #flash('send')
             request_data = request.form.to_dict()
-            #flash(request_data['form_delayed_dict'])
             selected_customer_code = request_data['form_delayed_dict']
             selected_customer = Customers.query.filter_by(code=selected_customer_code).first()
-            #flash(delayed_dict[selected_customer_code])
             email.send_delayed_payments(selected_customer, delayed_dict[selected_customer_code])
             del delayed_dict[selected_customer_code]
             session["delayed_dict"] = delayed_dict
-            #flash(delayed_dict)
-            #return (render_template('payments.html', title='Płatności', form=form, delayed_dict=delayed_dict))
+            flash('Wysłano do {}'.format(selected_customer_code))
         return (render_template('payments.html', title='Płatności', form=form, delayed_dict=delayed_dict))
+
+@app.route('/customers/', methods =['GET', 'POST'])
+@login_required
+def customers():
+    form = CustomerForm()
+    if current_user.user_type in ('admin', "office"):
+        customers_list = Customers.query.order_by(Customers.code).all()
+        if form.validate_on_submit():
+            new_customer = Customers(
+                code=form.code.data,
+                name=form.name.data,
+                email=form.email.data,
+                phone_num=form.phone_num.data,
+                phone2_num=form.phone2_num.data,
+            )
+            db.session.add(new_customer)
+            db.session.commit()
+            flash('Dodano klienta {}'.format(new_customer.code))
+            return redirect(url_for('customers'))
+        if "remove" in request.form:
+            customer = request.form.to_dict()
+            customer_id = customer['form_customer_id']
+            selected_customer = Customers.query.filter_by(id=customer_id).first()
+            db.session.delete(selected_customer)
+            db.session.commit()
+            flash('Usunięto klienta {}'.format(selected_customer.code))
+            return redirect(url_for('customers'))
+        if "edit" in request.form:
+            customer = request.form.to_dict()
+            customer_id = customer['form_customer_id']
+            return redirect(url_for('edit_customer', customer_id=customer_id))
+            pass
+
+    return render_template('customers.html', title='Klienci', form=form, customers=customers_list)
+
+@app.route('/edit_customer/<customer_id>', methods = ['GET', 'POST'])
+@login_required
+def edit_customer(customer_id):
+    form = CustomerForm()
+    if current_user.user_type in ('admin', 'office'):
+        selected_customer = Customers.query.filter_by(id=customer_id).first()
+        if form.validate_on_submit():
+            selected_customer.code = form.code.data
+            selected_customer.name = form.name.data
+            selected_customer.email = form.email.data
+            selected_customer.phone_num = form.phone_num.data
+            selected_customer.phone2_num = form.phone2_num.data
+            db.session.commit()
+            flash('Zmiany zostały zapisane')
+            return redirect(url_for('customers'))
+        elif request.method == 'GET':
+            form.code.data = selected_customer.code
+            form.name.data = selected_customer.name
+            form.email.data = selected_customer.email
+            form.phone_num.data = selected_customer.phone_num
+            form.phone2_num.data = selected_customer.phone2_num
+    else:
+        return redirect(url_for('index')) #nieuprawniony dostęp
+    return render_template('/edit_customer.html', title='Edycja klienta', form=form, customer_id=customer_id, selected_customer=selected_customer)

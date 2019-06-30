@@ -57,8 +57,9 @@
           <a href=" {{ url_for('add_machine') }}">Maszyny</a>
         {% endif %}
         {% if current_user.user_type in ("admin", "office") %}
-            <br><br> Płatności:
-            <a href=" {{ url_for('payments') }}">Płatności </a>
+            <br><br> Moduł płatności:
+            <a href=" {{ url_for('payments') }}">Płatności</a>
+            <a href=" {{ url_for('customers') }}">Klienci</a>
         {% endif %}
         {% endif %}
 

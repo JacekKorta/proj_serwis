@@ -4,7 +4,7 @@
 <form action="" method = "post" novalidate>
   {{ form.hidden_tag() }}
   <p>
-    {{ form.user_type.label }}
+    {{ form.user_type.label }}<br>
       <select name="user_type" class="selectpicker form-control">
       {% for user_type in users_type_list %}
         <option value="{{ user_type }}" selected> {{ user_type }} </option>
@@ -13,23 +13,23 @@
     <br>
   </p>
   <p>
-    {{ form.username.label }}
-    {{ form.username(size=16) }}<br>
+    {{ form.username.label }}<br>
+    {{ form.username(size=24) }}
   </p>
   <p>
-    {{ form.email.label }}
-    {{ form.email(size=24) }}<br>
+    {{ form.email.label }}<br>
+    {{ form.email(size=24) }}
   </p>
   <p>
-    {{ form.password.label }}
-    {{ form.password(size=16) }}
+    {{ form.password.label }}<br>
+    {{ form.password(size=24) }}
     {% for error in form.password.errors %}
       <span style="color: red;">[{{ error }}]</span>
     {% endfor %}
   </p>
   <p>
-    {{ form.password2.label }}
-    {{ form.password2(size=16) }}
+    {{ form.password2.label }}<br>
+    {{ form.password2(size=24) }}
     {% for error in form.password.errors %}
       <span style="color: red;">[{{ error }}]</span>
     {% endfor %}
@@ -61,5 +61,5 @@
         </form>
     </tr>
       {% endfor %}
-
+</table>
 {% endblock %}

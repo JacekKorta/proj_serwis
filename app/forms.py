@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, TextAreaField, IntegerField
-from wtforms.validators import DataRequired, ValidationError, Email, EqualTo, Length
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, IntegerField
+from wtforms.validators import DataRequired, ValidationError, EqualTo, Length
 from app.models import Machines
 
 class LoginForm(FlaskForm):
@@ -10,9 +10,8 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Zaloguj')
 
 class IssueForm(FlaskForm):
-    #machines_list = ['','JANOME MB-4', 'JANOME MB-7', 'JUNO E1015'] - toremove
     owner = StringField('Zgłaszajacy: ', validators=[DataRequired()])
-    machine_name = StringField('Model maszyny: ')#, choices=machines_list)#, validators=[DataRequired()])
+    machine_name = StringField('Model maszyny: ')
     serial_number = StringField('Numer seryjny: ', validators=[DataRequired()])
     part_number = StringField('Numer części: ', validators=[DataRequired()])
     part_name = StringField('Nazwa częśći (angielska z listy części): ')
@@ -32,7 +31,7 @@ class EditIssueForm(IssueForm):
 class UserForm(FlaskForm):
     user_type = StringField('Typ użytkownika', validators=[DataRequired()])
     username = StringField('Nazwa użytkownika:', validators=[DataRequired()])
-    email = StringField('Email:',validators=[DataRequired()])
+    email = StringField('Email:', validators=[DataRequired()])
     password = PasswordField('Hasło:', validators=[DataRequired()])
     password2 = PasswordField('Powtórz hasło:', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Zapisz')
@@ -58,3 +57,12 @@ class NewMachineForm(FlaskForm):
 class DelayedPaymentsForm(FlaskForm):
     clipboard_data = TextAreaField('Dane z symfonii:', validators=[DataRequired()])
     submit = SubmitField('Przetwarzaj')
+
+class CustomerForm(FlaskForm):
+    code = StringField('Kod:', validators=[DataRequired()])
+    name = StringField('Nazwa:')
+    phone_num = StringField('Numer telefonu:')
+    phone2_num = StringField('Drugi numer:')
+    email = StringField('Adres email:', validators=[DataRequired()])
+    submit = SubmitField('Dodaj')
+    save = SubmitField('Zapisz')

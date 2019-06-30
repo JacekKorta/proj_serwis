@@ -1,0 +1,76 @@
+<head>
+<style>
+#delayed_payments {
+  font-family: Lato,sans-serif;
+  border-collapse: collapse;
+  width: 70%;
+  color: black;
+}
+
+#delayed_payments td, #delayed_payments th {
+  border: 3px solid #black;
+  padding: 8px;
+}
+
+#delayed_payments tr:nth-child(even){background-color: #f2f2f2;}
+
+#delayed_payments tr:hover {background-color: #ddd;}
+
+#delayed_payments th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #e5ecf0;
+  color: black;
+}
+
+
+</style>
+</head>
+<p>
+    Dzień dobry,<br>
+    poniżej znajduje się zestawienie zaległych płatności:
+</p>
+
+<table border = 1 id="delayed_payments">
+  <caption>{{ customer }}</caption>
+  <tr>
+    <th> Nr faktury </th>
+    <th> Data wystawienia </th>
+    <th> Termin płatności </th>
+    <th> Pozostało do zapłaty </th>
+  </tr>
+  {% for invoice in data %}
+    <tr>
+      {% if invoice[0] %}
+      <td> {{ invoice[0] }} </td>
+      <td> {{ invoice[1] }} </td>
+      <td> {{ invoice[2] }} </td>
+      <td> {{ invoice[3] }} zł </td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+    <tr>
+      <td colspan="3">Razem: </td>
+      <td> {{ data[-1] }} zł </td>
+    </tr>
+</table><br>
+
+<p>
+    Prosimy o terminowe regulowanie należności.<br><br>
+
+    Jednocześnie przypominamy iż aktualne warunki sprzedaży (rabaty, terminy) zakładają terminowe opłacanie należności.<br>
+    W przypadku kolejnych opóźnień w płatnościach będziemy zmuszeni do zmiany warunków współpracy.<br><br>
+
+    Wiadomość wygenerowana automatycznie.<br><br>
+
+    Jeśli wymienione faktury zostały niedawno opłacone, zignoruj tę wiadomość.<br>
+    Jeśli wymienione faktury są już dawno opłacone, proszę skontaktuj się z nami.<br><br>
+
+    Pozdrawiam serdecznie,<br>
+    Dział księgowości<br>
+    ETI Sp. z o.o. spółka komandytowa<br>
+    ul. Poznańska 75, 60-185 Skórzewo<br>
+    tel. +48 798 709 244<br>
+    www.janome.pl   www.elna.pl <br>
+</p>
