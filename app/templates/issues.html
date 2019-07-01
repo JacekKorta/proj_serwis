@@ -5,7 +5,7 @@
 
 </head>
 <body>
-    {% if current_user.user_type in "admin" %}
+    {% if current_user.user_type in ("admin", "office") %}
         {% include "admin_view.html" %}
     {% elif current_user.user_type in "warehouse" %}
         {% include "warehouse_view.html" %}

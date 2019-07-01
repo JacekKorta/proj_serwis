@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>An unexpected error has occurred</h1>
-    <p>Je�li widzisz ten b�ad, to skontaktuj si� z administratorem</p>
-    <p><a href="{{ url_for('index') }}">Back</a></p>
+    <h1>Nobody expects an unexpected error... ja też </h1>
+    <img src="{{url_for('static', filename='500.png')}}" width="326" height="267"/><br>
+    <p1>Jesli uważasz, że powinno tu być coś innego to skontaktuj się z administratorem.</p1><br>
+    <p1>Niezapomnij opisać sytuacji w której wystapił błąd</p1>
+    <p><a href="{{ url_for('index') }}">Powrót do strony głównej</a></p>
 {% endblock %}

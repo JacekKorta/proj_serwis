@@ -6,7 +6,7 @@
         {{ form.hidden_tag() }}
         <p>
             {{ form.owner.label }}
-            {% if current_user.user_type in "admin" %}
+            {% if current_user.user_type in ("admin", "office") %}
               {{ form.owner(size=12) }}
             {% else %}
               {{ form.owner(size=12, readonly=True) }}
@@ -42,7 +42,7 @@
             {{ form.issue_desc.label }} <br>
             {{ form.issue_desc(cols=50, rows=1) }}
         </p>
-        {% if current_user.user_type in ("admin", "warehouse") %}
+        {% if current_user.user_type in ("admin", "warehouse", "office") %}
             <p>
                 {{ form.where_is_part.label }}
                 <select name="where_is_part" class="selectpicker form-control">
@@ -70,7 +70,7 @@
                 </select><br>
                 <br>
             </p>
-            {% if current_user.user_type in ("admin") %}
+            {% if current_user.user_type in ("admin", "office") %}
                 <p>
                     {{ form.janome_status.label }}
                     <select name="janome_status" class="selectpicker form-control">

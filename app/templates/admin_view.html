@@ -1,5 +1,5 @@
 
-
+{% if current_user.user_type in "admin" %}
 <table border="1">
     <tr><td>Co chcesz zrobić?</td></tr>
     <tr>
@@ -15,7 +15,7 @@
         </form>
     </tr>
 </table><br><hr><br>
-
+{% endif %}
 <table border =1 id="issues" class="display">
     <thead>
         <tr>

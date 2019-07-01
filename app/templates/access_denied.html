@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Non shall pass!</h1>
+    <img src="{{url_for('static', filename='non_shall_pass.jpg')}}" width="326" height="267"/><br><br>
+    <p1>Jesli uważasz, że powinieneś miec dostęp do tej strony, to skontaktuj się z administratorem.</p1><br>
+    <p1>Niezapomnij podać adresu strony na który chciałeś się podstępnie dostać ;) </p1>
+    <p><a href="{{ url_for('index') }}">Powrót do strony głównej</a></p>
+{% endblock %}

@@ -54,8 +54,12 @@ def index():
                         'Part name': col5,
                         'Issue desc.': col6
                         })
-        df.to_excel(r'app\raports\waranty_parts_XX.XX.XXXX.xlsx', sheet_name='waranty_parts1', index=False)
-        return send_file(r'raports\waranty_parts_XX.XX.XXXX.xlsx',attachment_filename='waranty_parts_XX.XX.XXXX.xlsx', as_attachment=True)
+        #online:
+        df.to_excel(r'/home/eaters/mysite/app/static/waranty_parts_XX.XX.XXXX.xlsx', sheet_name='waranty_parts1', index=False)
+        return send_file(r'/home/eaters/mysite/app/static/waranty_parts_XX.XX.XXXX.xlsx',attachment_filename='waranty_parts_XX.XX.XXXX.xlsx', as_attachment=True)
+        #offline:
+        #df.to_excel(r'app\raports\waranty_parts_XX.XX.XXXX.xlsx', sheet_name='waranty_parts1', index=False)
+        #return send_file(r'raports\waranty_parts_XX.XX.XXXX.xlsx',attachment_filename='waranty_parts_XX.XX.XXXX.xlsx', as_attachment=True)
 
     if "set_done" in request.form:
         issues = Issues.query.filter(~Issues.janome_status.in_(['wymienione', 'odrzucone']))
@@ -63,7 +67,6 @@ def index():
             item.janome_status = 'Zgłoszone'
             db.session.commit()
         #return render_template(index.html)
-
     return render_template('index.html', issues=issues, title='Strona główna', version='0.02')
 
 @app.route('/login/', methods=['GET', 'POST'])
@@ -177,7 +180,7 @@ def edit_issue(issue_id):
         return render_template(
             'edit_issue.html', issue_id=issue_id, title='Edytycja zgłoszenia', form=form, machines_list=machines_list, current_issue=current_issue)
     else:
-        return redirect(url_for('index'))#nieuprawniony dostęp
+        return render_template('access_denied.html', title='Brak dostępu')
 
 
 @app.route('/users/', methods=['GET', 'POST'])
@@ -268,7 +271,7 @@ def add_machine():
             return redirect(url_for('add_machine'))
         return(render_template('add_machine.html', title="Dodaj maszynę", form=form, machine_list=machine_list))
     else:
-        return redirect(url_for('index')) #nieuprawniony dostęp TODO
+        return render_template('access_denied.html', title='Brak dostępu')
 
 @app.route('/payments/', methods=['GET','POST'])
 @login_required
@@ -310,7 +313,8 @@ def payments():
             session["delayed_dict"] = delayed_dict
             flash('Wysłano do {}'.format(selected_customer_code))
         return (render_template('payments.html', title='Płatności', form=form, delayed_dict=delayed_dict))
-
+    else:
+        return render_template('access_denied.html', title='Brak dostępu')
 @app.route('/customers/', methods =['GET', 'POST'])
 @login_required
 def customers():
@@ -367,5 +371,6 @@ def edit_customer(customer_id):
             form.phone_num.data = selected_customer.phone_num
             form.phone2_num.data = selected_customer.phone2_num
     else:
-        return redirect(url_for('index')) #nieuprawniony dostęp
+        return render_template('access_denied.html', title='Brak dostępu')
     return render_template('/edit_customer.html', title='Edycja klienta', form=form, customer_id=customer_id, selected_customer=selected_customer)
+
