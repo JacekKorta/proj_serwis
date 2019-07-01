@@ -30,7 +30,11 @@
             <td>{{ issue.part_name }}</td>
             <td>{{ issue.issue_desc }}</td>
             <td>{{ issue.where_is_part }}</td>
+            {% if issue.exchange_status in ("czeka na wydanie", "czeka na wydanie (dostawa)", "czeka na wydanie (do zamówienia)", "czeka na wydanie (zamówione)", "wydane z maszyny") %}
+            <td bgcolor="red">{{ issue.exchange_status }}</td>
+            {% else %}
             <td>{{ issue.exchange_status }}</td>
+            {% endif %}
             <td>{{ issue.janome_status }}</td>
             <td>{{ issue.customer_delivery_time }}</td>
             <td>{{ issue.delivery_time }}</td>

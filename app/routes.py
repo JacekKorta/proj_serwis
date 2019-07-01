@@ -15,7 +15,7 @@ def index():
     if current_user.user_type in ('admin', 'warehouse', 'office'):
         issues = Issues.query.filter(~Issues.janome_status.in_(['wymienione', 'odrzucone'])).order_by(Issues.time_stamp.desc())
     elif current_user.user_type in ('service'):
-        issues = Issues.query.filter(Issues.owner == current_user.username,  ~Issues.janome_status.in_(['wymienione', 'odrzucone']))
+        issues = Issues.query.filter(Issues.owner == current_user.username,  ~Issues.janome_status.in_(['wymienione', 'odrzucone'])).order_by(Issues.time_stamp.desc())
     if 'edit' in request.form:
         issue = request.form.to_dict()
         issue_id = issue['form_id']

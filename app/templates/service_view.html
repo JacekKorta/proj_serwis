@@ -25,7 +25,11 @@
             <td>{{ issue.quantity }}</td>
             <td>{{ issue.part_name }}</td>
             <td>{{ issue.issue_desc }}</td>
-            <td>{{ issue.where_is_part }}</td>
+            {% if issue.where_is_part == "czeka na dostarczenie" %}
+                <td bgcolor="red">{{ issue.where_is_part }}</td>
+            {% else %}
+                <td>{{ issue.where_is_part }}</td>
+            {% endif %}
             <td>{{ issue.exchange_status }}</td>
             <input type="hidden" name="form_id" value="{{ issue.id }}">
             <td><input type="submit" name="edit" value="Zmień"></td>
