@@ -13,7 +13,7 @@ from pandas import DataFrame
 def index():
 #strona główna z niezakończonymi zgłoszeniami, dla danego użytkownika [PL]
     if current_user.user_type in ('admin', 'warehouse', 'office'):
-        issues = Issues.query.filter(~Issues.janome_status.in_(['wymienione', 'odrzucone']))
+        issues = Issues.query.filter(~Issues.janome_status.in_(['wymienione', 'odrzucone'])).order_by(Issues.time_stamp.desc())
     elif current_user.user_type in ('service'):
         issues = Issues.query.filter(Issues.owner == current_user.username,  ~Issues.janome_status.in_(['wymienione', 'odrzucone']))
     if 'edit' in request.form:
@@ -37,7 +37,7 @@ def index():
         col4 = []
         col5 = []
         col6 = []
-        issues = Issues.query.filter(~Issues.janome_status.in_(['wymienione', 'odrzucone']))
+        issues = Issues.query.filter(~Issues.janome_status.in_(['wymienione', 'odrzucone', 'zgłoszone']))
         for item in issues:
             col0.append(item.id)
             col1.append(item.machine_model)
@@ -159,7 +159,7 @@ def edit_issue(issue_id):
             current_issue.delivery_time = form.delivery_time.data
             db.session.commit()
             flash('Zmiany zostały zapisane')
-            return redirect(url_for('issues'))
+            return redirect(url_for('index'))
         elif request.method == 'GET':
             form.owner.data = current_issue.owner
             form.machine_name.data = current_issue.machine_model
