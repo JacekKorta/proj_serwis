@@ -19,7 +19,7 @@ def send_new_issue(user,issue):
             html_body = render_template('email/email_new_issue.html', issue=issue))
 
 def send_delayed_payments(customer, data):
-    subject = '{} - Zaległe płatnosci dla ETI'.format(customer.code)
+    subject = '{} - Zaległe płatności dla ETI'.format(customer.code)
     office = app.config['OFFICE'][0]
     send_mail(subject,
               sender=office,

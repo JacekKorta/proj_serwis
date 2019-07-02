@@ -62,9 +62,9 @@ def index():
         #return send_file(r'raports\waranty_parts_XX.XX.XXXX.xlsx',attachment_filename='waranty_parts_XX.XX.XXXX.xlsx', as_attachment=True)
 
     if "set_done" in request.form:
-        issues = Issues.query.filter(~Issues.janome_status.in_(['wymienione', 'odrzucone']))
-        for item in issues:
-            item.janome_status = 'Zgłoszone'
+        new_issues = Issues.query.filter(Issues.janome_status.in_(['niezgłoszone', 'Niezgłoszone']))
+        for item in new_issues:
+            item.janome_status = 'zgłoszone'
             db.session.commit()
         #return render_template(index.html)
     return render_template('index.html', issues=issues, title='Strona główna', version='0.02')
@@ -293,9 +293,9 @@ def payments():
                     data = delayed_dict[customer_code]
                     email.send_delayed_payments(selected_customer, data)
                     flash('Wysłano do {}'.format(customer_code))
-                    del delayed_dict[customer_code]
                 except:
                     flash('Nie udało się wysłać do {}'.format(customer_code))
+            session["delayed_dict"] = {}
 
         if "remove" in request.form:
             delayed_dict = session["delayed_dict"]
@@ -303,15 +303,20 @@ def payments():
             selected_customer = request_data['form_delayed_dict']
             del delayed_dict[selected_customer]
             session["delayed_dict"] = delayed_dict
+
         if "send" in request.form:
-            delayed_dict = session["delayed_dict"]
-            request_data = request.form.to_dict()
-            selected_customer_code = request_data['form_delayed_dict']
-            selected_customer = Customers.query.filter_by(code=selected_customer_code).first()
-            email.send_delayed_payments(selected_customer, delayed_dict[selected_customer_code])
-            del delayed_dict[selected_customer_code]
-            session["delayed_dict"] = delayed_dict
-            flash('Wysłano do {}'.format(selected_customer_code))
+            try:
+                delayed_dict = session["delayed_dict"]
+                request_data = request.form.to_dict()
+                selected_customer_code = request_data['form_delayed_dict']
+                selected_customer = Customers.query.filter_by(code=selected_customer_code).first()
+                email.send_delayed_payments(selected_customer, delayed_dict[selected_customer_code])
+                del delayed_dict[selected_customer_code]
+                session["delayed_dict"] = delayed_dict
+                flash('Wysłano do {}'.format(selected_customer_code))
+            except:
+                flash('Nie udało się wysłać do {}'.format(selected_customer_code))
+
         return (render_template('payments.html', title='Płatności', form=form, delayed_dict=delayed_dict))
     else:
         return render_template('access_denied.html', title='Brak dostępu')
@@ -373,4 +378,3 @@ def edit_customer(customer_id):
     else:
         return render_template('access_denied.html', title='Brak dostępu')
     return render_template('/edit_customer.html', title='Edycja klienta', form=form, customer_id=customer_id, selected_customer=selected_customer)
-

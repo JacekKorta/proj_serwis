@@ -2,7 +2,7 @@
 import time
 from datetime import datetime
 from app import db
-from app.models import Machines, Issues
+from app.models import Machines, Issues, Customers
 '''
 with open ('machines.txt', 'r') as file:
     for line in file:
@@ -12,9 +12,9 @@ with open ('machines.txt', 'r') as file:
 '''
 '''
 class Issue (object):
-    
+
     def __init__(self, time_stamp, owner, machine_model, serial_number, part_number, quantity, part_name,
-                 issue_desc, where_is_part, exchange_status, janome_status, comment):      
+                 issue_desc, where_is_part, exchange_status, janome_status, comment):
         self.time_stamp = time_stamp
         self.owner = owner
         self.machine_model = machine_model
@@ -47,6 +47,21 @@ with open ("issues.tsv", "r", encoding="utf-8-sig") as file:
                      comment=x[11])
         db.session.add(obj)
     db.session.commit()
-        
-'''       
-        
+
+'''
+'''
+#read customer data from db
+x = Customers.query.all()
+
+for item in x:
+    #print("{};{}".format(item.code,item.email))
+    with open ("lost.txt", "a") as file:
+        file.write("{};{}".format(item.code,item.email))
+'''
+
+with open("dystrybutorzy.txt", "r") as file:
+    for line in file:
+        x = line.split(";")
+        obj = Customers(code=x[0],email=x[1])
+        db.session.add(obj)
+    db.session.commit()
