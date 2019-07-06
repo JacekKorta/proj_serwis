@@ -1,3 +1,10 @@
+{% if prev_url %}
+    <a href="{{ prev_url }}">Poprzednia strona</a>
+{% endif %}
+{% if next_url %}
+    <a href="{{ next_url }}">Następna strona</a>
+{% endif %}
+
 <table border =1 id="issues">
     <tr>
         <th>Id</th>
@@ -38,3 +45,9 @@
     </tr>
         {% endfor %}
 </table>
+{% if prev_url %}
+    <a href="{{ prev_url }}">Poprzednia strona</a>
+{% endif %}
+{% if next_url %}
+    <a href="{{ next_url }}">Następna strona</a>
+{% endif %}

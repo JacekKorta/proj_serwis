@@ -16,6 +16,12 @@
     </tr>
 </table><br><hr><br>
 {% endif %}
+{% if prev_url %}
+    <a href="{{ prev_url }}">Poprzednia strona</a>
+{% endif %}
+{% if next_url %}
+    <a href="{{ next_url }}">Następna strona</a>
+{% endif %}
 <table border =1 id="issues" class="display">
     <thead>
         <tr>
@@ -69,3 +75,9 @@
     </tbody>
         {% endfor %}
 </table>
+{% if prev_url %}
+    <a href="{{ prev_url }}">Poprzednia strona</a>
+{% endif %}
+{% if next_url %}
+    <a href="{{ next_url }}">Następna strona</a>
+{% endif %}

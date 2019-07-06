@@ -13,9 +13,19 @@ from pandas import DataFrame
 def index():
 #strona główna z niezakończonymi zgłoszeniami, dla danego użytkownika [PL]
     if current_user.user_type in ('admin', 'warehouse', 'office'):
-        issues = Issues.query.filter(~Issues.janome_status.in_(['wymienione', 'odrzucone'])).order_by(Issues.time_stamp.desc())
+        page = request.args.get('page', 1, type=int)
+        issues = Issues.query.filter(~Issues.janome_status.in_(['wymienione', 'odrzucone'])).order_by(Issues.time_stamp.desc()).paginate(
+            page, app.config['ISSUES_PER_PAGE'], False)
+        next_url = url_for('issues', page=issues.next_num) if issues.has_next else None
+        prev_url = url_for('issues', page=issues.prev_num) if issues.has_prev else None
+
     elif current_user.user_type in ('service'):
-        issues = Issues.query.filter(Issues.owner == current_user.username,  ~Issues.janome_status.in_(['wymienione', 'odrzucone'])).order_by(Issues.time_stamp.desc())
+        page = request.args.get('page', 1, type=int)
+        issues = Issues.query.filter(Issues.owner == current_user.username,  ~Issues.janome_status.in_(['wymienione', 'odrzucone'])).order_by(Issues.time_stamp.desc()).paginate(
+            page, app.config['ISSUES_PER_PAGE'], False)
+        next_url = url_for('issues', page=issues.next_num) if issues.has_next else None
+        prev_url = url_for('issues', page=issues.prev_num) if issues.has_prev else None
+
     if 'edit' in request.form:
         issue = request.form.to_dict()
         issue_id = issue['form_id']
@@ -67,7 +77,7 @@ def index():
             item.janome_status = 'zgłoszone'
             db.session.commit()
         #return render_template(index.html)
-    return render_template('index.html', issues=issues, title='Strona główna', version='0.02')
+    return render_template('index.html', issues=issues.items, title='Strona główna', version=app.config['VERSION'], next_url=next_url, prev_url=prev_url)
 
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
@@ -96,9 +106,18 @@ def logout():
 def issues():
 #is showing the list of issues
     if current_user.user_type in ('admin', 'warehouse', "office"):
-        issues = Issues.query.order_by(Issues.id).all()
+        page = request.args.get('page', 1, type=int)
+        issues = Issues.query.order_by(Issues.time_stamp.desc()).paginate(
+            page, app.config['ISSUES_PER_PAGE'], False)
+        next_url = url_for('issues', page=issues.next_num) if issues.has_next else None
+        prev_url = url_for('issues', page=issues.prev_num) if issues.has_prev else None
+
     elif current_user.user_type in ('service'):
-        issues = Issues.query.filter(Issues.owner == current_user.username).order_by(Issues.id).all()
+        page = request.args.get('page', 1, type=int)
+        issues = Issues.query.filter(Issues.owner == current_user.username).order_by(Issues.time_stamp.desc()).paginate(
+            page, app.config['ISSUES_PER_PAGE'], False)
+        next_url = url_for('issues', page=issues.next_num) if issues.has_next else None
+        prev_url = url_for('issues', page=issues.prev_num) if issues.has_prev else None
     if 'edit' in request.form:
         issue = request.form.to_dict()
         issue_id = issue['form_id']
@@ -112,7 +131,8 @@ def issues():
         flash('Usunięto zgłoszenie numer {}'.format(issue_id))
         return redirect(url_for('issues'))
 
-    return render_template('issues.html', issues=issues, title='Zgłoszenia')
+    return render_template('index.html', issues=issues.items, title='Zgłoszenia', next_url=next_url, prev_url=prev_url)
+
 
 @app.route('/new_issue/', methods = ['GET', 'POST'])
 @login_required
