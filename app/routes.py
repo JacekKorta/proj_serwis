@@ -76,7 +76,7 @@ def index():
         for item in new_issues:
             item.janome_status = 'zgłoszone'
             db.session.commit()
-        #return render_template(index.html)
+        return redirect(url_for('index'))
     return render_template('index.html', issues=issues.items, title='Strona główna', version=app.config['VERSION'], next_url=next_url, prev_url=prev_url)
 
 @app.route('/login/', methods=['GET', 'POST'])
@@ -300,11 +300,9 @@ def payments():
     if current_user.user_type in ('admin', "office"):
         delayed_dict = {}
         if form.validate_on_submit():
-        #if request.method == 'POST':
             data = form.clipboard_data.data
             delayed_dict = payments_mod.delayed_payments(data)
             session["delayed_dict"] = delayed_dict
-        #elif request.method == 'GET':
         if "send_to_all" in request.form:
             delayed_dict = session["delayed_dict"]
             for customer_code in delayed_dict.keys():
