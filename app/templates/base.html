@@ -21,9 +21,24 @@
   background-color: #4CAF50;
   color: white;
 }
+
+div {
+  margin: 7px;
+}
+#my_select {
+width: 200px;
+}
+
+#my_input {
+width: 200px;
+}
 </style>
 
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     {% if version %}
     <title>Złoszenia serwisowe ETI {{ version }}</title>
     {% else %}
@@ -35,35 +50,35 @@
 </head>
 <body>
     <div>
-        <H2>Zgłoszenia serwisowe ETI {{ version }}</H2>
-        {% if current_user.username %}
-        <H3> Zalogowany jako:
-          <a href=" {{ url_for('edit_user', user_id = current_user.id) }}">{{ current_user.username }}</a>
-        ({{ current_user.user_type }})</H3><br>
-        {% endif %}
-        Menu:
-          <a href=" {{ url_for('index') }}">Strona główna</a>
-        {% if current_user.is_anonymous %}
-          <a href=" {{ url_for('login') }}">Logowanie</a>
-        {% else %}
-        {% if current_user.user_type not in "warehouse" %}
-            <a href=" {{ url_for('new_issue') }}">Nowe zgłoszenie</a>
-        {% endif %}
-        <a href=" {{ url_for('issues') }}">Zgłoszenia</a>
-        <a href="{{ url_for('logout') }}">Wyloguj</a>
-        {% if current_user.user_type in "admin" %}
-        <br><br> Narzędzia administatora:
-          <a href=" {{ url_for('users') }}">Użytkownicy</a>
-          <a href=" {{ url_for('add_machine') }}">Maszyny</a>
-        {% endif %}
-        {% if current_user.user_type in ("admin", "office") %}
-            <br><br> Moduł płatności:
-            <a href=" {{ url_for('payments') }}">Płatności</a>
-            <a href=" {{ url_for('customers') }}">Klienci</a>
-        {% endif %}
-        {% endif %}
-
-
+        <p>
+            <H2>Zgłoszenia serwisowe ETI {{ version }}</H2>
+            {% if current_user.username %}
+            <H3> Zalogowany jako:
+              <a href=" {{ url_for('edit_user', user_id = current_user.id) }}">{{ current_user.username }}</a>
+            ({{ current_user.user_type }})</H3><br>
+            {% endif %}
+            Menu:
+              <a href=" {{ url_for('index') }}">Strona główna</a>
+            {% if current_user.is_anonymous %}
+              <a href=" {{ url_for('login') }}">Logowanie</a>
+            {% else %}
+            {% if current_user.user_type not in "warehouse" %}
+                <a href=" {{ url_for('new_issue') }}">Nowe zgłoszenie</a>
+            {% endif %}
+            <a href=" {{ url_for('issues') }}">Zgłoszenia</a>
+            <a href="{{ url_for('logout') }}">Wyloguj</a>
+            {% if current_user.user_type in "admin" %}
+            <br><br> Narzędzia administatora:
+              <a href=" {{ url_for('users') }}">Użytkownicy</a>
+              <a href=" {{ url_for('add_machine') }}">Maszyny</a>
+            {% endif %}
+            {% if current_user.user_type in ("admin", "office") %}
+                <br><br> Moduł płatności:
+                <a href=" {{ url_for('payments') }}">Płatności</a>
+                <a href=" {{ url_for('customers') }}">Klienci</a>
+            {% endif %}
+            {% endif %}
+        </p>
     </div>
     <hr>
     {% with messages = get_flashed_messages() %}
@@ -76,4 +91,16 @@
     {% endif %}
     {% endwith %}
     {% block content %} {% endblock %}
+
+<script>
+$(document).ready(function(){
+  $("#my_input").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#my_table tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script>
+
 </body>

@@ -1,65 +1,67 @@
 {% extends "base.html" %}
 {% block content %}
-<h3> Dodaj nowego użytkownia </h3>
-<form action="" method = "post" novalidate>
-  {{ form.hidden_tag() }}
-  <p>
-    {{ form.user_type.label }}<br>
-      <select name="user_type" class="selectpicker form-control">
-      {% for user_type in users_type_list %}
-        <option value="{{ user_type }}" selected> {{ user_type }} </option>
+<div>
+  <h3> Dodaj nowego użytkownia </h3>
+  <form action="" method = "post" novalidate>
+    {{ form.hidden_tag() }}
+    <p>
+      {{ form.user_type.label }}<br>
+        <select name="user_type" class="selectpicker form-control" id="my_select">
+        {% for user_type in users_type_list %}
+          <option value="{{ user_type }}" selected> {{ user_type }} </option>
+        {% endfor %}
+      </select>
+      <br>
+    </p>
+    <p>
+      {{ form.username.label }}<br>
+      {{ form.username(size=24) }}
+    </p>
+    <p>
+      {{ form.email.label }}<br>
+      {{ form.email(size=24) }}
+    </p>
+    <p>
+      {{ form.password.label }}<br>
+      {{ form.password(size=24) }}
+      {% for error in form.password.errors %}
+        <span style="color: red;">[{{ error }}]</span>
       {% endfor %}
-    </select>
-    <br>
-  </p>
-  <p>
-    {{ form.username.label }}<br>
-    {{ form.username(size=24) }}
-  </p>
-  <p>
-    {{ form.email.label }}<br>
-    {{ form.email(size=24) }}
-  </p>
-  <p>
-    {{ form.password.label }}<br>
-    {{ form.password(size=24) }}
-    {% for error in form.password.errors %}
-      <span style="color: red;">[{{ error }}]</span>
-    {% endfor %}
-  </p>
-  <p>
-    {{ form.password2.label }}<br>
-    {{ form.password2(size=24) }}
-    {% for error in form.password.errors %}
-      <span style="color: red;">[{{ error }}]</span>
-    {% endfor %}
-  </p>
-  <p> {{ form.submit }}
-</form>
-{% if form.errors %}
-{{ form.errors }}<br>
-{% endif %}
-<h3>Lista aktualnych użytkowników: <h3>
-<table border =1>
-  <tr>
-    <td>Id</td>
-    <td>Nazwa</td>
-    <td>Email</td>
-    <td>Typ</td>
-  </tr>
-    {% for user in users %}
+    </p>
+    <p>
+      {{ form.password2.label }}<br>
+      {{ form.password2(size=24) }}
+      {% for error in form.password.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+      {% endfor %}
+    </p>
+    <p> {{ form.submit }}
+  </form>
+  {% if form.errors %}
+  {{ form.errors }}<br>
+  {% endif %}
+  <h3>Lista aktualnych użytkowników: <h3>
+  <table border =1 id="issues">
     <tr>
-        <form action="" method="post">
-          {{ form.hidden_tag() }}
-          <td>{{ user.id }}</td>
-          <td>{{ user.username }} </td>
-          <td>{{ user.email }}</td>
-          <td>{{ user.user_type }}</td>
-          <input type="hidden" name="form_user_id" value="{{ user.id }}">
-          <td><input type="submit" name="edit" value="edytuj"></td>
-          <td><input type="submit" onclick="return confirm('Czy na pewno chcesz usunąć użytkownika {{ user.username }}?')" name="remove" value="usuń"</td>
-        </form>
+      <td>Id</td>
+      <td>Nazwa</td>
+      <td>Email</td>
+      <td>Typ</td>
     </tr>
-      {% endfor %}
-</table>
+      {% for user in users %}
+      <tr>
+          <form action="" method="post">
+            {{ form.hidden_tag() }}
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }} </td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.user_type }}</td>
+            <input type="hidden" name="form_user_id" value="{{ user.id }}">
+            <td><input type="submit" name="edit" value="edytuj"></td>
+            <td><input type="submit" onclick="return confirm('Czy na pewno chcesz usunąć użytkownika {{ user.username }}?')" name="remove" value="usuń"</td>
+          </form>
+      </tr>
+        {% endfor %}
+  </table>
+</div>
 {% endblock %}

@@ -2,6 +2,7 @@
 {% block content %}
 
 <hr>
+<div>
     <form action="" method = "post" novalidate>
         {{ form.hidden_tag() }}
         <p>
@@ -14,7 +15,7 @@
         </p>
         <p>
             {{ form.machine_name.label }}
-            <select name="machine_name" class="selectpicker form-control">
+            <select name="machine_name" class="selectpicker form-control" id="my_select">
                 {% for machine in machines_list %}
                 <option value = '{{ machine }}'>{{ machine.name }}</option>
                 {% endfor %}
@@ -45,7 +46,7 @@
         {% if current_user.user_type in ("admin", "warehouse", "office") %}
             <p>
                 {{ form.where_is_part.label }}
-                <select name="where_is_part" class="selectpicker form-control">
+                <select name="where_is_part" class="selectpicker form-control" id="my_select">
                     <option value="nowe">Nowe</option>
                     <option value="czeka na dostarczenie">Czeka na dostarczenie</option>
                     <option value="dostarczone">Dostarczone</option>
@@ -57,7 +58,7 @@
             </p>
             <p>
                 {{ form.exchange_status.label }}
-                <select name="exchange_status" class="selectpicker form-control">
+                <select name="exchange_status" class="selectpicker form-control" id="my_select">
                     <option value="nowe">Nowe</option>
                     <option value="czeka na wydanie">Czeka na wydanie</option>
                     <option value="czeka na wydanie (do zamówienia)">Czeka na wydanie (do zamówienia)</option>
@@ -73,7 +74,7 @@
             {% if current_user.user_type in ("admin", "office") %}
                 <p>
                     {{ form.janome_status.label }}
-                    <select name="janome_status" class="selectpicker form-control">
+                    <select name="janome_status" class="selectpicker form-control" id="my_select">
                         <option value="niezgłoszone">Niezgłoszone</option>
                         <option value="zgłoszone">Zgłoszone</option>
                         <option value="czeka na wymianę">Czeka na wymianę</option>
@@ -105,6 +106,6 @@
         {{ form.machine_name.data }}
         {% endif %}
     </form>
-    {#{% endif %} {komentarz 1 - if admin...#}
+</div>
 
 {% endblock %}

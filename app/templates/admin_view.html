@@ -1,83 +1,91 @@
 
 {% if current_user.user_type in "admin" %}
-<table border="1">
-    <tr><td>Co chcesz zrobić?</td></tr>
-    <tr>
-        <td>Exportuj dane do pliku</td>
-        <form action="" method="post">
-          <td><input type="submit" name="export" value="Exportuj"> </td>
-        </form>
-    </tr>
-    <tr>
-        <td>Ustaw wszystkie jako "Zgłoszone"</td>
-        <form action="" method="post">
-          <td><input type="submit" name="set_done" value="Zmień"> </td>
-        </form>
-    </tr>
-</table><br><hr><br>
-{% endif %}
-{% if prev_url %}
-    <a href="{{ prev_url }}">Poprzednia strona</a>
-{% endif %}
-{% if next_url %}
-    <a href="{{ next_url }}">Następna strona</a>
-{% endif %}
-<table border =1 id="issues" class="display">
-    <thead>
+<div>
+    <table border="1" >
+        <tr><td>Co chcesz zrobić?</td></tr>
         <tr>
-            <th>Id</th>
-            <th>Data</th>
-            <th>Zgłaszajacy</th>
-            <th>Model maszyny</th>
-            <th>Numer seryjny</th>
-            <th>Numer części</th>
-            <th>Ilość</th>
-            <th>Nazwa części</th>
-            <th>Opis usterki</th>
-            <th>Status dostarczenia do magazynu</th>
-            <th>Status wymiany klientowi</th>
-            <th>Status zgłoszenia w Janome</th>
-            <th>Termin dostawy do klienta</th>
-            <th>Termin dostawy do ETI</th>
-            <th>Uwagi</th>
-
-        </tr>
-    </thead>
-    {% for issue in issues %}
-    <tbody>
-        <tr>
+            <td>Exportuj dane do pliku</td>
             <form action="" method="post">
-                <td>{{issue.id }}</td>
-                <td>{{ moment(issue.time_stamp).format('LLL') }}</td>
-                <td>{{ issue.owner }}</td>
-                <td>{{ issue.machine_model }}</td>
-                <td>{{ issue.serial_number }}</td>
-                <td>{{ issue.part_number }}</td>
-                <td>{{ issue.quantity }}</td>
-                <td>{{ issue.part_name }}</td>
-                <td>{{ issue.issue_desc }}</td>
-                {% if issue.where_is_part == "czeka na dostarczenie" %}
-                <td bgcolor="red">{{ issue.where_is_part }}</td>
-                {% else %}
-                <td>{{ issue.where_is_part }}</td>
-                {% endif %}
-                <td>{{ issue.exchange_status }}</td>
-                <td>{{ issue.janome_status }}</td>
-                <td>{{ issue.customer_delivery_time }}</td>
-                <td>{{ issue.delivery_time }}</td>
-                <td>{{ issue.comment }}</td>
-                <input type="hidden" name="form_id" value="{{ issue.id }}">
-                <td><input type="submit" name="edit" value="Zmień"></td>
-                <td><input type="submit" onclick="return confirm('Czy na pewno chcesz usunąć wpis nr {{ issue.id }}?')" name="remove" value="Usuń"> </td>
+              <td><input type="submit" name="export" value="Exportuj"> </td>
             </form>
-
         </tr>
-    </tbody>
-        {% endfor %}
-</table>
-{% if prev_url %}
-    <a href="{{ prev_url }}">Poprzednia strona</a>
-{% endif %}
-{% if next_url %}
-    <a href="{{ next_url }}">Następna strona</a>
-{% endif %}
+        <tr>
+            <td>Ustaw wszystkie jako "Zgłoszone"</td>
+            <form action="" method="post">
+              <td><input type="submit" name="set_done" value="Zmień"> </td>
+            </form>
+        </tr>
+    </table><br><hr><br>
+</div>
+    {% endif %}
+<div>
+    <input class="form-control" id="my_input" type="text" placeholder="Szukaj.."><br>
+    {% if prev_url %}
+        <a href="{{ prev_url }}">Poprzednia strona</a>
+    {% endif %}
+    {% if next_url %}
+        <a href="{{ next_url }}">Następna strona</a>
+    {% endif %}
+    <table border =1 id="issues" class="display">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Data</th>
+                <th>Zgłaszajacy</th>
+                <th>Model maszyny</th>
+                <th>Numer seryjny</th>
+                <th>Numer części</th>
+                <th>Ilość</th>
+                <th>Nazwa części</th>
+                <th>Opis usterki</th>
+                <th>Status dostarczenia do magazynu</th>
+                <th>Status wymiany klientowi</th>
+                <th>Status zgłoszenia w Janome</th>
+                <th>Termin dostawy do klienta</th>
+                <th>Termin dostawy do ETI</th>
+                <th>Uwagi</th>
+
+            </tr>
+        </thead>
+        {% for issue in issues %}
+        <tbody id="my_table">
+            <tr>
+                <form action="" method="post">
+                    <td>{{ issue.id }}</td>
+                    <td>{{ moment(issue.time_stamp).format('LLL') }}</td>
+                    <td>{{ issue.owner }}</td>
+                    <td>{{ issue.machine_model }}</td>
+                    <td>{{ issue.serial_number }}</td>
+                    <td>{{ issue.part_number }}</td>
+                    <td>{{ issue.quantity }}</td>
+                    <td>{{ issue.part_name }}</td>
+                    <td><button type="button" class="btn btn-link" data-toggle="collapse" data-target="#issue_desc_full{{ issue.id }}">Pokaż opis usterki</button>
+                        <div id="issue_desc_full{{ issue.id }}" class="collapse">{{ issue.issue_desc }}</div>
+                    </td>
+                    {% if issue.where_is_part == "czeka na dostarczenie" %}
+                    <td bgcolor="red">{{ issue.where_is_part }}</td>
+                    {% else %}
+                    <td>{{ issue.where_is_part }}</td>
+                    {% endif %}
+                    <td>{{ issue.exchange_status }}</td>
+                    <td>{{ issue.janome_status }}</td>
+                    <td>{{ issue.customer_delivery_time }}</td>
+                    <td>{{ issue.delivery_time }}</td>
+                    <td>{{ issue.comment }}</td>
+                    <input type="hidden" name="form_id" value="{{ issue.id }}">
+                    <td><input type="submit" name="edit" value="Zmień"></td>
+                    <td><input type="submit" onclick="return confirm('Czy na pewno chcesz usunąć wpis nr {{ issue.id }}?')" name="remove" value="Usuń"> </td>
+                </form>
+
+            </tr>
+        </tbody>
+            {% endfor %}
+    </table>
+    {% if prev_url %}
+        <a href="{{ prev_url }}">Poprzednia strona</a>
+    {% endif %}
+    {% if next_url %}
+        <a href="{{ next_url }}">Następna strona</a>
+    {% endif %}
+</div>
+

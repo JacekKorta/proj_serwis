@@ -1,3 +1,5 @@
+
+<input class="form-control" id="my_input" type="text" placeholder="Szukaj.."><br>
 {% if prev_url %}
     <a href="{{ prev_url }}">Poprzednia strona</a>
 {% endif %}
@@ -21,28 +23,31 @@
 
     </tr>
     {% for issue in issues %}
-    <tr>
-        <form action="" method="post">
-            <td> {{issue.id }}</td>
-            <td>{{ moment(issue.time_stamp).format('LLL') }}</td>
-            <td>{{ issue.owner }}</td>
-            <td>{{ issue.machine_model }}</td>
-            <td>{{ issue.serial_number }}</td>
-            <td>{{ issue.part_number }}</td>
-            <td>{{ issue.quantity }}</td>
-            <td>{{ issue.part_name }}</td>
-            <td>{{ issue.issue_desc }}</td>
-            {% if issue.where_is_part == "czeka na dostarczenie" %}
-                <td bgcolor="red">{{ issue.where_is_part }}</td>
-            {% else %}
-                <td>{{ issue.where_is_part }}</td>
-            {% endif %}
-            <td>{{ issue.exchange_status }}</td>
-            <input type="hidden" name="form_id" value="{{ issue.id }}">
-            <td><input type="submit" name="edit" value="Zmień"></td>
-        </form>
-
-    </tr>
+    <tbody id="my_table">
+        <tr>
+            <form action="" method="post">
+                <td> {{issue.id }}</td>
+                <td>{{ moment(issue.time_stamp).format('LLL') }}</td>
+                <td>{{ issue.owner }}</td>
+                <td>{{ issue.machine_model }}</td>
+                <td>{{ issue.serial_number }}</td>
+                <td>{{ issue.part_number }}</td>
+                <td>{{ issue.quantity }}</td>
+                <td>{{ issue.part_name }}</td>
+                <td><button type="button" class="btn btn-link" data-toggle="collapse" data-target="#issue_desc_full{{ issue.id }}">Pokaż opis usterki</button>
+                    <div id="issue_desc_full{{ issue.id }}" class="collapse">{{ issue.issue_desc }}</div>
+                </td>
+                {% if issue.where_is_part == "czeka na dostarczenie" %}
+                    <td bgcolor="red">{{ issue.where_is_part }}</td>
+                {% else %}
+                    <td>{{ issue.where_is_part }}</td>
+                {% endif %}
+                <td>{{ issue.exchange_status }}</td>
+                <input type="hidden" name="form_id" value="{{ issue.id }}">
+                <td><input type="submit" name="edit" value="Zmień"></td>
+            </form>
+        </tr>
+    </tbody>
         {% endfor %}
 </table>
 {% if prev_url %}

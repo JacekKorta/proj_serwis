@@ -7,7 +7,7 @@ from app.models import User, Issues, Machines, Customers
 from pandas import DataFrame
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 @app.route('/index/', methods=['GET', 'POST'])
 @login_required
 def index():
@@ -94,7 +94,7 @@ def login():
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('index')
         return redirect(next_page)
-    return render_template('login.html', title='Logowanie', form=form)
+    return render_template('login.html', title='Logowanie', form=form, version=app.config['VERSION'])
 
 @app.route('/logout/')
 def logout():
@@ -131,7 +131,7 @@ def issues():
         flash('Usunięto zgłoszenie numer {}'.format(issue_id))
         return redirect(url_for('issues'))
 
-    return render_template('index.html', issues=issues.items, title='Zgłoszenia', next_url=next_url, prev_url=prev_url)
+    return render_template('index.html', issues=issues.items, title='Zgłoszenia', next_url=next_url, prev_url=prev_url, version=app.config['VERSION'])
 
 
 @app.route('/new_issue/', methods = ['GET', 'POST'])
@@ -157,7 +157,7 @@ def new_issue():
         flash("Dodano zgłoszenie serwisowe o nr: {}".format(issue.id))
         email.send_new_issue(current_user, issue)
         return redirect(url_for('issues'))
-    return render_template('/new_issue.html', title='Nowe zgłoszenie', form=form, machines_list=machines_list)
+    return render_template('/new_issue.html', title='Nowe zgłoszenie', form=form, machines_list=machines_list, version=app.config['VERSION'])
 
 @app.route('/edit_issue/<issue_id>', methods=['GET', 'POST'])
 @login_required
@@ -198,7 +198,7 @@ def edit_issue(issue_id):
             form.customer_delivery_time.data = current_issue.customer_delivery_time
             form.delivery_time.data = current_issue.delivery_time
         return render_template(
-            'edit_issue.html', issue_id=issue_id, title='Edytycja zgłoszenia', form=form, machines_list=machines_list, current_issue=current_issue)
+            'edit_issue.html', issue_id=issue_id, title='Edytycja zgłoszenia', form=form, machines_list=machines_list, current_issue=current_issue, version=app.config['VERSION'])
     else:
         return render_template('access_denied.html', title='Brak dostępu')
 
@@ -234,7 +234,7 @@ def users():
             user = request.form.to_dict()
             user_id = user['form_user_id']
             return redirect(url_for('edit_user', user_id=user_id))
-    return render_template('/users.html', title='Uzytkownicy', form=form, users_type_list=users_type_list, users=users)
+    return render_template('/users.html', title='Uzytkownicy', form=form, users_type_list=users_type_list, users=users, version=app.config['VERSION'])
 
 @app.route('/edit_user/<user_id>', methods=['GET', 'POST'])
 @login_required
@@ -265,7 +265,7 @@ def edit_user(user_id):
         flash('Twoje id {} nie jest równe {}'.format(current_user.id, user_id))
         return redirect(url_for('index'))#nieuprawniony dostęp
     return render_template('/edit_user.html', title = 'Edycja konta użytkownika',
-    form=form, users_type_list=users_type_list, user_id=user_id, selected_user=selected_user)
+    form=form, users_type_list=users_type_list, user_id=user_id, selected_user=selected_user, version=app.config['VERSION'])
 
 
 @app.route('/add_machine/', methods=['GET', 'POST'])
@@ -289,7 +289,7 @@ def add_machine():
             db.session.commit()
             flash('Usunięteo maszynę {}'.format(current_machine))
             return redirect(url_for('add_machine'))
-        return(render_template('add_machine.html', title="Dodaj maszynę", form=form, machine_list=machine_list))
+        return(render_template('add_machine.html', title="Dodaj maszynę", form=form, machine_list=machine_list, version=app.config['VERSION']))
     else:
         return render_template('access_denied.html', title='Brak dostępu')
 
@@ -335,7 +335,7 @@ def payments():
             except:
                 flash('Nie udało się wysłać do {}'.format(selected_customer_code))
 
-        return (render_template('payments.html', title='Płatności', form=form, delayed_dict=delayed_dict))
+        return (render_template('payments.html', title='Płatności', form=form, delayed_dict=delayed_dict, version=app.config['VERSION']))
     else:
         return render_template('access_denied.html', title='Brak dostępu')
 @app.route('/customers/', methods =['GET', 'POST'])
@@ -370,7 +370,7 @@ def customers():
             return redirect(url_for('edit_customer', customer_id=customer_id))
             pass
 
-    return render_template('customers.html', title='Klienci', form=form, customers=customers_list)
+    return render_template('customers.html', title='Klienci', form=form, customers=customers_list, version=app.config['VERSION'])
 
 @app.route('/edit_customer/<customer_id>', methods = ['GET', 'POST'])
 @login_required
@@ -395,4 +395,4 @@ def edit_customer(customer_id):
             form.phone2_num.data = selected_customer.phone2_num
     else:
         return render_template('access_denied.html', title='Brak dostępu')
-    return render_template('/edit_customer.html', title='Edycja klienta', form=form, customer_id=customer_id, selected_customer=selected_customer)
+    return render_template('/edit_customer.html', title='Edycja klienta', form=form, customer_id=customer_id, selected_customer=selected_customer, version=app.config['VERSION'])

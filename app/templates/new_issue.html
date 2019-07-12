@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div>
     <h1>Nowe zgłoszenie</h1>
     <form action="" method = "post" novalidate>
         {{ form.hidden_tag() }}
@@ -10,7 +11,7 @@
         </p>
         <p>
             {{ form.machine_name.label }}
-            <select name="machine" class="selectpicker form-control">
+            <select name="machine" class="selectpicker form-control" id="my_select">
                 {% for machine in machines_list %}
                 <option value = '{{ machine.name }}' selected>{{ machine.name }}</option>
                 {% endfor %}
@@ -41,4 +42,5 @@
         {{ form.machine_name.data }}
         {% endif %}
     </form>
+</div>
 {% endblock %}

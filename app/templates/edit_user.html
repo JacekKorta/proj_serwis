@@ -1,54 +1,57 @@
 {% extends "base.html" %}
 {% block content %}
-<h3> Edytuj użytkownia </h3>
-<form action="" method = "post" novalidate>
-  {{ form.hidden_tag() }}
-  <p>
-    {% if current_user.user_type in "admin" %}
-      {{ form.user_type.label }}
-        <select name="user_type" class="selectpicker form-control">
-        {% for user_type in users_type_list %}
-          <option value="{{ user_type }}" selected> {{ user_type }} </option>
-        {% endfor %}
-          <option value="{{ selected_user.user_type }}" selected> {{ selected_user.user_type }} </option>
-      </select>
-    {% else %}
-      <input type="hidden" name="user_type" value="{{ current_user.user_type }}">
-    {% endif %}<br>
-  </p>
-  <p>
-    {{ form.username.label }}
-    {% if current_user.user_type in "admin" %}
-      {{ form.username(size=16) }}
-    {% else %}
-      {{ form.username(size=16, readonly=True) }}
-    {% endif %}<br>
-  </p>
-  <p>
-    {{ form.email.label }}
-    {% if current_user.user_type in "admin" %}
-      {{ form.email(size=24) }}
-    {% else %}
-      {{ form.email(size=24, readonly=True) }}
-    {% endif %}<br>
-  </p>
-  <p>
-    {{ form.password.label }}
-    {{ form.password(size=16) }}
-    {% for error in form.password.errors %}
-      <span style="color: red;">[{{ error }}]</span>
-    {% endfor %}
-  </p>
-  <p>
-    {{ form.password2.label }}
-    {{ form.password2(size=16) }}
-    {% for error in form.password.errors %}
-      <span style="color: red;">[{{ error }}]</span>
-    {% endfor %}
-  </p>
-  <p> {{ form.submit }}
-</form>
+<div>
+  <h3> Edytuj użytkownia </h3>
+  <form action="" method = "post" novalidate>
+    {{ form.hidden_tag() }}
+    <p>
+      {% if current_user.user_type in "admin" %}
+        {{ form.user_type.label }}
+          <select name="user_type" class="selectpicker form-control" id="my_select">
+          {% for user_type in users_type_list %}
+            <option value="{{ user_type }}" selected> {{ user_type }} </option>
+          {% endfor %}
+            <option value="{{ selected_user.user_type }}" selected> {{ selected_user.user_type }} </option>
+        </select>
+      {% else %}
+        <input type="hidden" name="user_type" value="{{ current_user.user_type }}">
+      {% endif %}<br>
+    </p>
+    <p>
+      {{ form.username.label }}
+      {% if current_user.user_type in "admin" %}
+        {{ form.username(size=16) }}
+      {% else %}
+        {{ form.username(size=16, readonly=True) }}
+      {% endif %}<br>
+    </p>
+    <p>
+      {{ form.email.label }}
+      {% if current_user.user_type in "admin" %}
+        {{ form.email(size=36) }}
+      {% else %}
+        {{ form.email(size=36, readonly=True) }}
+      {% endif %}<br>
+    </p>
+    <p>
+      {{ form.password.label }}
+      {{ form.password(size=16) }}
+      {% for error in form.password.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+      {% endfor %}
+    </p>
+    <p>
+      {{ form.password2.label }}
+      {{ form.password2(size=16) }}
+      {% for error in form.password.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+      {% endfor %}
+    </p>
+    <p> {{ form.submit }}
+  </form>
+
 {% if form.errors %}
 {{ form.errors }}<br>
 {% endif %}
-{% endblock %}
+</div>
+  {% endblock %}
