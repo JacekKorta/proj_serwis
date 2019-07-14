@@ -1,58 +1,58 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Płatności</h2>
-<form action="" method = "post">
+<div>
+  <h2>Płatności</h2>
+  <form action="" method = "post">
+      {{ form.hidden_tag() }}
+      <p>
+        {{ form.clipboard_data.label }}<br>
+        {{ form.clipboard_data(cols=50, rows =5) }}
+      </p>
+      <p>
+        {{ form.submit }}
+      </p>
+  </form>
+  <form action="" method = "post">
     {{ form.hidden_tag() }}
-    <p>
-      {{ form.clipboard_data.label }}<br>
-      {{ form.clipboard_data(cols=50, rows =5) }}
-    </p>
-    <p>
-      {{ form.submit }}
-    </p>
-</form>
-<form action="" method = "post">
-  {{ form.hidden_tag() }}
-  <input type="submit" name="send_to_all" value="Wyslij do wszystkich">
-</form>
-
-{% for item in delayed_dict.keys() %}
-<form action="" method="post">
-  {{ form.hidden_tag() }}
-    <table border = 1 id="issues">
-      <caption>{{ item }}</caption>
-      <input type="hidden" name="form_delayed_dict" value="{{ item }}">
-      <tr>
-        <th> Nr faktury </th>
-        <th> Data wystawienia </th>
-        <th> Termin płatności </th>
-        <th> Pozostało do zapłaty </th>
-      </tr>
-      {% for invoice in delayed_dict[item] %}
-        <tr>
-          {% if invoice[0] %}
-          {#<input type="hidden" name="form_invoice" value="{{ invoice }}">#}
-          <td> {{ invoice[0] }} </td>
-          <td> {{ invoice[1] }} </td>
-          <td> {{ invoice[2] }} </td>
-          <td> {{ invoice[3] }} zł </td>
-          {% endif %}
-        </tr>
-        {% endfor %}
-        <tr>
-          <td colspan="3">Razem: </td>
-          <td> {{ delayed_dict[item][-1] }} zł </td>
-        </tr>
-        <tr><td colspan="4" align="center" >
-          <input type="submit" name="send" value="Wyślij przypomnienie">
-          <input type="submit" name="remove" value="Usuń z listy">
-        </td></tr>
-    </table><br>
+    <input type="submit" name="send_to_all" value="Wyslij do wszystkich">
   </form>
 
-  {% endfor %}
-
+  {% for item in delayed_dict.keys() %}
+  <form action="" method="post">
+    {{ form.hidden_tag() }}
+      <table border = 1 id="issues">
+        <caption>{{ item }}</caption>
+        <input type="hidden" name="form_delayed_dict" value="{{ item }}">
+        <tr>
+          <th> Nr faktury </th>
+          <th> Data wystawienia </th>
+          <th> Termin płatności </th>
+          <th> Pozostało do zapłaty </th>
+        </tr>
+        {% for invoice in delayed_dict[item] %}
+          <tr>
+            {% if invoice[0] %}
+            {#<input type="hidden" name="form_invoice" value="{{ invoice }}">#}
+            <td> {{ invoice[0] }} </td>
+            <td> {{ invoice[1] }} </td>
+            <td> {{ invoice[2] }} </td>
+            <td> {{ invoice[3] }} zł </td>
+            {% endif %}
+          </tr>
+          {% endfor %}
+          <tr>
+            <td colspan="3">Razem: </td>
+            <td> {{ delayed_dict[item][-1] }} zł </td>
+          </tr>
+          <tr><td colspan="4" align="center" >
+            <input type="submit" name="send" value="Wyślij przypomnienie">
+            <input type="submit" name="remove" value="Usuń z listy">
+          </td></tr>
+      </table><br>
+    </form>
+    {% endfor %}
+</div>
 
 
 {% endblock %}

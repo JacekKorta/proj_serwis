@@ -7,3 +7,4 @@ venv/
 app.db
 .idea/
 *.xlsx
+*.db
