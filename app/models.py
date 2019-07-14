@@ -10,6 +10,7 @@ class User(UserMixin,db.Model):
     password_hash = db.Column(db.String(128))
     user_type = db.Column(db.String(64))
     owner_name = db.relationship('Issues', backref='owner_name', lazy=True)
+    event_owner = db.relationship('Events', backref='event_owner', lazy=True)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -55,6 +56,13 @@ class Customers(db.Model):
     phone_num = db.Column(db.String(20))
     phone2_num = db.Column(db.String(20))
     email = db.Column(db.String(48), unique=True)
+
+class Events(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    time_stamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    user = db.Column(db.String(32), db.ForeignKey('user.username'))
+    description = db.Column(db.String(256))
+
     
 @login.user_loader
 def load_user(id):
