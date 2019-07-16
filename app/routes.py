@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request, Response, send_file, session
 from werkzeug.urls import url_parse
-from app import app, db, email, payments_mod
+from app import app, db, email, payments_mod, events
 from app.forms import LoginForm, IssueForm, EditIssueForm, UserForm, NewMachineForm, UserEditForm, DelayedPaymentsForm, CustomerForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Issues, Machines, Customers
@@ -36,7 +36,9 @@ def index():
         selected_issue = Issues.query.filter_by(id=issue_id).first()
         db.session.delete(selected_issue)
         db.session.commit()
-        flash('Usunięto zgłoszenie numer {}'.format(issue_id))
+        description = ('Usunięto zgłoszenie numer {}'.format(issue_id))
+        flash(description)
+        events.events_rec(current_user.username, description) #nie działa?!?!?!!?
         return redirect(url_for('index'))
     if "export" in request.form:
         #wywalić do osobnego modułu dodać do zgłoszeń
@@ -91,6 +93,7 @@ def login():
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
+        events.events_rec(current_user.username, 'was logged in')
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('index')
         return redirect(next_page)
@@ -98,6 +101,7 @@ def login():
 
 @app.route('/logout/')
 def logout():
+    events.events_rec(current_user.username, 'was logged out')
     logout_user()
     return redirect(url_for('index'))
 
