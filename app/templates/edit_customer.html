@@ -1,33 +1,34 @@
 {% extends "base.html" %}
 {% block content %}
-<h3>Edytuj klienta ({{ selected_customer.code }}):</h3>
-<form action="" method="post">
-    {{ form.hidden_tag() }}
-    <p>
-        {{ form.code.label }}<br>
-        {{ form.code(size=32) }}
-    </p>
-    <p>
-        {{ form.name.label }}<br>
-        {{ form.name(size=32) }}
-    </p>
-    <p>
-        {{ form.email.label }}<br>
-        {{ form.email(size=32) }}
-    </p>
-    <p>
-        {{ form.phone_num.label }}<br>
-        {{ form.phone_num(size=32) }}
-    </p>
-    <p>
-        {{ form.phone2_num.label }}<br>
-        {{ form.phone2_num(size=32) }}
-    </p>
-    <p> {{ form.save }}</p><hr>
-</form>
+<div>
+  <h3>Edytuj klienta ({{ selected_customer.code }}):</h3>
+  <form action="" method="post">
+      {{ form.hidden_tag() }}
+      <p>
+          {{ form.code.label }}<br>
+          {{ form.code(size=32) }}
+      </p>
+      <p>
+          {{ form.name.label }}<br>
+          {{ form.name(size=32) }}
+      </p>
+      <p>
+          {{ form.email.label }}<br>
+          {{ form.email(size=32) }}
+      </p>
+      <p>
+          {{ form.phone_num.label }}<br>
+          {{ form.phone_num(size=32) }}
+      </p>
+      <p>
+          {{ form.phone2_num.label }}<br>
+          {{ form.phone2_num(size=32) }}
+      </p>
+      <p> {{ form.save }}</p><hr>
+  </form>
 
-{% if form.errors %}
-{{ form.errors }}<br>
-{% endif %}
-
+  {% if form.errors %}
+  {{ form.errors }}<br>
+  {% endif %}
+</div>
 {% endblock %}

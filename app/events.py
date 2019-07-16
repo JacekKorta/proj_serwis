@@ -6,8 +6,10 @@ def events_rec (current_user, description):
     db.session.add(event)
     db.session.commit()
 
+'''
 def events_rec_wraper(func):
     def inner_func(*args, **kwargs):
         result = func(*args, **kwargs)
         return result
     return inner_func
+'''

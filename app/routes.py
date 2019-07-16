@@ -36,9 +36,9 @@ def index():
         selected_issue = Issues.query.filter_by(id=issue_id).first()
         db.session.delete(selected_issue)
         db.session.commit()
-        description = ('Usunięto zgłoszenie numer {}'.format(issue_id))
+        description = ('Issue no {} was removed'.format(issue_id))
         flash(description)
-        events.events_rec(current_user.username, description) #nie działa?!?!?!!?
+        events.events_rec(current_user.username, description)
         return redirect(url_for('index'))
     if "export" in request.form:
         #wywalić do osobnego modułu dodać do zgłoszeń
@@ -66,6 +66,8 @@ def index():
                         'Part name': col5,
                         'Issue desc.': col6
                         })
+        description = 'export xlsx file'
+        events.events_rec(current_user.username, description)
         #online:
         df.to_excel(r'/home/eaters/mysite/app/static/waranty_parts_XX.XX.XXXX.xlsx', sheet_name='waranty_parts1', index=False)
         return send_file(r'/home/eaters/mysite/app/static/waranty_parts_XX.XX.XXXX.xlsx',attachment_filename='waranty_parts_XX.XX.XXXX.xlsx', as_attachment=True)
@@ -78,6 +80,8 @@ def index():
         for item in new_issues:
             item.janome_status = 'zgłoszone'
             db.session.commit()
+            description = 'changed janome status for "zgłoszone" for {} issue'.format(item.id)
+            events.events_rec(current_user.username, description)
         return redirect(url_for('index'))
     return render_template('index.html', issues=issues.items, title='Strona główna', version=app.config['VERSION'], next_url=next_url, prev_url=prev_url)
 
@@ -132,9 +136,10 @@ def issues():
         selected_issue = Issues.query.filter_by(id=issue_id).first()
         db.session.delete(selected_issue)
         db.session.commit()
-        flash('Usunięto zgłoszenie numer {}'.format(issue_id))
+        description = ('Issue no {} was removed'.format(issue_id))
+        flash(description)
+        events.events_rec(current_user.username, description)
         return redirect(url_for('issues'))
-
     return render_template('index.html', issues=issues.items, title='Zgłoszenia', next_url=next_url, prev_url=prev_url, version=app.config['VERSION'])
 
 
@@ -145,7 +150,7 @@ def new_issue():
     form = IssueForm()
     form.owner.data = current_user.username
     if form.validate_on_submit():
-        issue =Issues(
+        issue = Issues(
             owner=current_user.username,
             machine_model=request.form.get('machine'),
             serial_number=form.serial_number.data,
@@ -158,7 +163,9 @@ def new_issue():
             janome_status='niezgłoszone')
         db.session.add(issue)
         db.session.commit()
-        flash("Dodano zgłoszenie serwisowe o nr: {}".format(issue.id))
+        description = ('Issue no {} was added'.format(issue.id))
+        flash(description)
+        events.events_rec(current_user.username, description)
         email.send_new_issue(current_user, issue)
         return redirect(url_for('issues'))
     return render_template('/new_issue.html', title='Nowe zgłoszenie', form=form, machines_list=machines_list, version=app.config['VERSION'])
