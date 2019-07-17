@@ -19,7 +19,11 @@ class User(UserMixin,db.Model):
         return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
-        return '<User {}>'.format(self.username)
+        return '<User id: {}; username: {}; email: {}; user type: {}>'.format(
+        self.id,
+        self.username,
+        self.email,
+        self.user_type)
 
 class Issues(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -39,15 +43,26 @@ class Issues(db.Model):
     delivery_time = db.Column(db.String(32), index=True)
 
     def __repr__(self):
-        return'<Zgłoszenie {}, Produkt: {}, do maszyny: {}, o numerze seryjnym: {}>'.format(
-            self.id, self.part_number, self.machines_model, self.serial_number)
+        return'<Id: {}; machine model: {}; serial number: {}; product no: {}, part name: {};\
+        issue des: {}; where is part: {}; exchange status: {}; janome status: {}; comment: {}; delivery time: {}>'.format(
+            self.id,
+            self.machine_model,
+            self.serial_number,
+            self.part_number,
+            self.part_name,
+            self.issue_desc,
+            self.where_is_part,
+            self.exchange_status,
+            self.janome_status,
+            self.comment,
+            self.delivery_time)
 
 class Machines(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(56), index=True)
 
     def __repr__(self):
-        return ' <id {}, Nazwa: {}>'.format(self.id, self.name)
+        return '<id: {}; Name: {}>'.format(self.id, self.name)
 
 class Customers(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -57,13 +72,18 @@ class Customers(db.Model):
     phone2_num = db.Column(db.String(20))
     email = db.Column(db.String(48), unique=True)
 
+    def __repr__(self):
+        return '<id: {}; code: {}; name: {}; phone_num: {}; phone2_num: {}; email: {}>'.format(
+        self.id, self.code, self.name, self.phone_num, self.phone2_num, self.email
+        )
+
 class Events(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     time_stamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user = db.Column(db.String(32), db.ForeignKey('user.username'))
     description = db.Column(db.String(256))
 
-    
+
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))

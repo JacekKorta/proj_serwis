@@ -36,9 +36,8 @@ def index():
         selected_issue = Issues.query.filter_by(id=issue_id).first()
         db.session.delete(selected_issue)
         db.session.commit()
-        description = ('Issue no {} was removed'.format(issue_id))
-        flash(description)
-        events.events_rec(current_user.username, description)
+        flash('Zgłoszenie nr {} zostało usunięte'.format(issue_id))
+        events.events_rec(current_user.username, 'issue {} was removed'.format(issue_id))
         return redirect(url_for('index'))
     if "export" in request.form:
         #wywalić do osobnego modułu dodać do zgłoszeń
@@ -49,7 +48,8 @@ def index():
         col4 = []
         col5 = []
         col6 = []
-        issues = Issues.query.filter(~Issues.janome_status.in_(['wymienione', 'odrzucone', 'zgłoszone']))
+        issues = Issues.query.filter(Issues.janome_status.in_(['niezgłoszone']))
+        issues_id_list = []
         for item in issues:
             col0.append(item.id)
             col1.append(item.machine_model)
@@ -58,6 +58,7 @@ def index():
             col4.append(item.quantity)
             col5.append(item.part_name)
             col6.append(item.issue_desc)
+            issues_id_list.append(item.id)
         df = DataFrame({'Id.': col0,
                         'Machine model': col1,
                         'Serial number': col2,
@@ -66,8 +67,7 @@ def index():
                         'Part name': col5,
                         'Issue desc.': col6
                         })
-        description = 'export xlsx file'
-        events.events_rec(current_user.username, description)
+        events.events_rec(current_user.username, 'export xlsx file for these isuess id: {}'.format(''.join(str(issues_id_list))))
         #online:
         df.to_excel(r'/home/eaters/mysite/app/static/waranty_parts_XX.XX.XXXX.xlsx', sheet_name='waranty_parts1', index=False)
         return send_file(r'/home/eaters/mysite/app/static/waranty_parts_XX.XX.XXXX.xlsx',attachment_filename='waranty_parts_XX.XX.XXXX.xlsx', as_attachment=True)
@@ -119,7 +119,6 @@ def issues():
             page, app.config['ISSUES_PER_PAGE'], False)
         next_url = url_for('issues', page=issues.next_num) if issues.has_next else None
         prev_url = url_for('issues', page=issues.prev_num) if issues.has_prev else None
-
     elif current_user.user_type in ('service'):
         page = request.args.get('page', 1, type=int)
         issues = Issues.query.filter(Issues.owner == current_user.username).order_by(Issues.time_stamp.desc()).paginate(
@@ -136,9 +135,8 @@ def issues():
         selected_issue = Issues.query.filter_by(id=issue_id).first()
         db.session.delete(selected_issue)
         db.session.commit()
-        description = ('Issue no {} was removed'.format(issue_id))
-        flash(description)
-        events.events_rec(current_user.username, description)
+        flash('Zgłoszenie nr {} zostało usunięte'.format(issue_id))
+        events.events_rec(current_user.username, 'issue {} was removed'.format(issue_id))
         return redirect(url_for('issues'))
     return render_template('index.html', issues=issues.items, title='Zgłoszenia', next_url=next_url, prev_url=prev_url, version=app.config['VERSION'])
 
@@ -163,9 +161,9 @@ def new_issue():
             janome_status='niezgłoszone')
         db.session.add(issue)
         db.session.commit()
-        description = ('Issue no {} was added'.format(issue.id))
-        flash(description)
-        events.events_rec(current_user.username, description)
+        flash('Dodano zgłoszenie nr {}'.format(issue.id))
+        events.events_rec(current_user.username, 'added: {}'.format(str(issue)))
+        #online:
         email.send_new_issue(current_user, issue)
         return redirect(url_for('issues'))
     return render_template('/new_issue.html', title='Nowe zgłoszenie', form=form, machines_list=machines_list, version=app.config['VERSION'])
@@ -193,6 +191,7 @@ def edit_issue(issue_id):
             current_issue.delivery_time = form.delivery_time.data
             db.session.commit()
             flash('Zmiany zostały zapisane')
+            events.events_rec(current_user.username, 'edit: {}'.format(str(current_issue)))
             return redirect(url_for('index'))
         elif request.method == 'GET':
             form.owner.data = current_issue.owner
@@ -232,6 +231,7 @@ def users():
             db.session.add(user)
             db.session.commit()
             flash('Dodano nowego użytkownika')
+            events.events_rec(current_user.username, 'added new user: {}'.format(user.username))
             return redirect(url_for('users'))
         if "remove" in request.form:
             user = request.form.to_dict()
@@ -240,6 +240,7 @@ def users():
             db.session.delete(selected_user)
             db.session.commit()
             flash('Usunięto użytkownika {}'.format(selected_user))
+            events.events_rec(current_user.username, 'removed user: {}'.format(selected_user.username))
             return redirect(url_for('users'))
         if "edit" in request.form:
             user = request.form.to_dict()
@@ -264,6 +265,7 @@ def edit_user(user_id):
                 selected_user.set_password(form.password.data)
             db.session.commit()
             flash('Zmiany zostały zapisane')
+            events.events_rec(current_user.username, 'changed user data: {}'.format(str(selected_user)))
             if current_user.user_type in "admin":
                 return redirect(url_for('users'))
             else:
@@ -274,6 +276,7 @@ def edit_user(user_id):
             form.email.data = selected_user.email
     else:
         flash('Twoje id {} nie jest równe {}'.format(current_user.id, user_id))
+        events.events_rec(current_user.username, 'tried tricky tricks :)')
         return redirect(url_for('index'))#nieuprawniony dostęp
     return render_template('/edit_user.html', title = 'Edycja konta użytkownika',
     form=form, users_type_list=users_type_list, user_id=user_id, selected_user=selected_user, version=app.config['VERSION'])
@@ -291,6 +294,7 @@ def add_machine():
             db.session.add(machine)
             db.session.commit()
             flash('Dodano maszynę')
+            events.events_rec(current_user.username, 'added new machine: {}'.format(machine.name))
             return redirect(url_for('add_machine'))
         if "remove" in request.form:
             machine = request.form.to_dict()
@@ -299,6 +303,7 @@ def add_machine():
             db.session.delete(current_machine)
             db.session.commit()
             flash('Usunięteo maszynę {}'.format(current_machine))
+            events.events_rec(current_user.username, 'removed: {}'.format(current_machine.name))
             return redirect(url_for('add_machine'))
         return(render_template('add_machine.html', title="Dodaj maszynę", form=form, machine_list=machine_list, version=app.config['VERSION']))
     else:
@@ -322,6 +327,7 @@ def payments():
                     data = delayed_dict[customer_code]
                     email.send_delayed_payments(selected_customer, data)
                     flash('Wysłano do {}'.format(customer_code))
+                    events.events_rec(current_user.username,'sended mail to {}'.format(customer_code))
                 except:
                     flash('Nie udało się wysłać do {}'.format(customer_code))
             session["delayed_dict"] = {}
@@ -332,7 +338,6 @@ def payments():
             selected_customer = request_data['form_delayed_dict']
             del delayed_dict[selected_customer]
             session["delayed_dict"] = delayed_dict
-
         if "send" in request.form:
             try:
                 delayed_dict = session["delayed_dict"]
@@ -343,6 +348,7 @@ def payments():
                 del delayed_dict[selected_customer_code]
                 session["delayed_dict"] = delayed_dict
                 flash('Wysłano do {}'.format(selected_customer_code))
+                events.events_rec(current_user.username, 'sended mail to {}'.format(selected_customer_code))
             except:
                 flash('Nie udało się wysłać do {}'.format(selected_customer_code))
 
@@ -366,6 +372,7 @@ def customers():
             db.session.add(new_customer)
             db.session.commit()
             flash('Dodano klienta {}'.format(new_customer.code))
+            events.events_rec(current_user.username, 'added new customer: {} with mail: {}'.format(new_customer.code, new_customer.email))
             return redirect(url_for('customers'))
         if "remove" in request.form:
             customer = request.form.to_dict()
@@ -374,6 +381,7 @@ def customers():
             db.session.delete(selected_customer)
             db.session.commit()
             flash('Usunięto klienta {}'.format(selected_customer.code))
+            events.events_rec(current_user.username, 'removed customer: {}'.format(selected_customer.code))
             return redirect(url_for('customers'))
         if "edit" in request.form:
             customer = request.form.to_dict()
@@ -397,6 +405,7 @@ def edit_customer(customer_id):
             selected_customer.phone2_num = form.phone2_num.data
             db.session.commit()
             flash('Zmiany zostały zapisane')
+            events.events_rec(current_user.username, 'edited customer: {}'.format(str(selected_customer)))
             return redirect(url_for('customers'))
         elif request.method == 'GET':
             form.code.data = selected_customer.code
