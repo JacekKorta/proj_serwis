@@ -58,10 +58,10 @@ width: 200px;
             ({{ current_user.user_type }})</H3><br>
             {% endif %}
             Menu:
-              <a href=" {{ url_for('index') }}">Strona główna</a>
             {% if current_user.is_anonymous %}
               <a href=" {{ url_for('login') }}">Logowanie</a>
             {% else %}
+                <a href=" {{ url_for('index') }}">Strona główna</a>
             {% if current_user.user_type not in "warehouse" %}
                 <a href=" {{ url_for('new_issue') }}">Nowe zgłoszenie</a>
             {% endif %}
@@ -69,8 +69,9 @@ width: 200px;
             <a href="{{ url_for('logout') }}">Wyloguj</a>
             {% if current_user.user_type in "admin" %}
             <br><br> Narzędzia administatora:
-              <a href=" {{ url_for('users') }}">Użytkownicy</a>
-              <a href=" {{ url_for('add_machine') }}">Maszyny</a>
+                <a href=" {{ url_for('users') }}">Użytkownicy</a>
+                <a href=" {{ url_for('add_machine') }}">Maszyny</a>
+                <a href=" {{ url_for('events') }}">Zdarzenia</a>
             {% endif %}
             {% if current_user.user_type in ("admin", "office") %}
                 <br><br> Moduł płatności:

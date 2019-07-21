@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div>
+    <input class="form-control" id="my_input" type="text" placeholder="Szukaj.."><br>
+    {% if prev_url %}
+        <a href="{{ prev_url }}">Poprzednia strona</a>
+    {% endif %}
+    {% if next_url %}
+        <a href="{{ next_url }}">Następna strona</a>
+    {% endif %}
+    <table border =1 id="issues" class="display">
+        <thead>
+            <tr>
+                <th width="2%">Id</th>
+                <th width="12%">Data</th>
+                <th width ="8%">Użytkownik</th>
+                <th>Zdarzenie</th>
+            </tr>
+        </thead>
+        {% for event in events %}
+        <tbody id="my_table">
+            <tr>
+                <td>{{ event.id }}</td>
+                <td>{{ moment(event.time_stamp).format('LLL') }}</td>
+                <td>{{ event.user }}</td>
+                <td><button type="button" class="btn btn-link" data-toggle="collapse" data-target="#event_desc_full{{ event.id }}">
+                    Pokaż opis zdarzenia</button>
+                <div id ="event_desc_full{{ event.id }}" class="collapse">{{ event.description }}</div>
+                </td>
+            </tr>
+        </tbody>
+        {% endfor %}
+    </table>
+    {% if prev_url %}
+        <a href="{{ prev_url }}">Poprzednia strona</a>
+    {% endif %}
+    {% if next_url %}
+        <a href="{{ next_url }}">Następna strona</a>
+    {% endif %}
+</div>
+{% endblock %}

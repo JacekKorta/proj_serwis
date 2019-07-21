@@ -43,10 +43,10 @@
   <h3>Lista aktualnych użytkowników: <h3>
   <table border =1 id="issues">
     <tr>
-      <td>Id</td>
-      <td>Nazwa</td>
-      <td>Email</td>
-      <td>Typ</td>
+      <th>Id</th>
+      <th>Nazwa</th>
+      <th>Email</th>
+      <th>Typ</th>
     </tr>
       {% for user in users %}
       <tr>
@@ -57,8 +57,8 @@
             <td>{{ user.email }}</td>
             <td>{{ user.user_type }}</td>
             <input type="hidden" name="form_user_id" value="{{ user.id }}">
-            <td><input type="submit" name="edit" value="edytuj"></td>
-            <td><input type="submit" onclick="return confirm('Czy na pewno chcesz usunąć użytkownika {{ user.username }}?')" name="remove" value="usuń"</td>
+            <td width="3%"><input type="submit" name="edit" value="edytuj"></td>
+            <td width="3%"><input type="submit" onclick="return confirm('Czy na pewno chcesz usunąć użytkownika {{ user.username }}?')" name="remove" value="usuń"</td>
           </form>
       </tr>
         {% endfor %}

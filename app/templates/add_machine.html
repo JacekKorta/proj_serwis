@@ -1,33 +1,33 @@
 {% extends "base.html" %}
 {% block content %}
-<h3> Dodaj nową maszynę </h3>
-  <form action="" method="post">
-    {{ form.hidden_tag() }}
-      {{ form.machine_name.label }}
-      {{ form.machine_name(size=16)}}
-
-      {{ form.submit }}
-
-      {% if form.errors %}
-      {{ form.errors }}<br>
-      {% endif %}
-  </form>
-{% if machine_list %}
-<table border =1>
-  <tr>
-    <td>id</td>
-    <td>Nazwa</td>
-  </tr>
-    {% for machine in machine_list %}
+<div>
+  <h3> Dodaj nową maszynę </h3>
+    <form action="" method="post">
+      {{ form.hidden_tag() }}
+        {{ form.machine_name.label }}
+        {{ form.machine_name(size=16)}}
+        {{ form.submit }}
+        {% if form.errors %}
+        {{ form.errors }}<br>
+        {% endif %}
+    </form>
+  {% if machine_list %}
+  <table border =1>
     <tr>
-        <form action="" method="post">
-          <td>{{ machine.id }}</td>
-          <td>{{ machine.name }} </td>
-          <input type="hidden" name="form_machine_id" value="{{ machine.id }}">
-          <td><input type="submit" onclick="return confirm('Czy na pewno chcesz usunąć maszynę {{ machine.name }}?')" name="remove" value="usuń"</td>
-        </form>
+      <td>Id</td>
+      <td>Nazwa</td>
     </tr>
-      {% endfor %}
-</table>
+      {% for machine in machine_list %}
+      <tr>
+          <form action="" method="post">
+            <td>{{ machine.id }}</td>
+            <td>{{ machine.name }} </td>
+            <input type="hidden" name="form_machine_id" value="{{ machine.id }}">
+            <td><input type="submit" onclick="return confirm('Czy na pewno chcesz usunąć maszynę {{ machine.name }}?')" name="remove" value="usuń"</td>
+          </form>
+      </tr>
+        {% endfor %}
+  </table>
+</div>
 {% endif %}
 {% endblock %}

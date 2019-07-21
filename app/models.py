@@ -19,7 +19,7 @@ class User(UserMixin,db.Model):
         return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
-        return '<User id: {}; username: {}; email: {}; user type: {}>'.format(
+        return '<User_id: {}; username: {}; email: {}; user_type: {}>'.format(
         self.id,
         self.username,
         self.email,
@@ -43,8 +43,8 @@ class Issues(db.Model):
     delivery_time = db.Column(db.String(32), index=True)
 
     def __repr__(self):
-        return'<Id: {}; machine model: {}; serial number: {}; product no: {}, part name: {};\
-        issue des: {}; where is part: {}; exchange status: {}; janome status: {}; comment: {}; delivery time: {}>'.format(
+        return'<Id: {}; machine_model: {}; serial_number: {}; product_num: {}, part_name: {};\
+        issue_desc: {}; where_is_part: {}; exchange_status: {}; janome_status: {}; comment: {}; delivery_time: {}>'.format(
             self.id,
             self.machine_model,
             self.serial_number,
