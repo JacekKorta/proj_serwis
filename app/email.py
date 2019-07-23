@@ -9,6 +9,7 @@ def send_mail (subject, sender, recipients, text_body, html_body ):
     mail.send(msg)
 
 def send_new_issue(user,issue):
+    #sending mail about new issue
     subject = '[SERWIS] Nowe zgłoszenie serwisowe nr {}'.format(issue.id)
     admin_adres = app.config['ADMIN'][0]
     warehouse_adres = app.config['WAREHOUSE'][0]
@@ -19,6 +20,7 @@ def send_new_issue(user,issue):
             html_body = render_template('email/email_new_issue.html', issue=issue))
 
 def send_delayed_payments(customer, data):
+    #sending mail about delayed payments information
     subject = '{} - Zaległe płatności dla ETI'.format(customer.code)
     office = app.config['OFFICE'][0]
     send_mail(subject,

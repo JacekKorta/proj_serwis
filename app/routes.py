@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, request, Response, send_file, session
+from flask import render_template, flash, redirect, url_for, request, send_file, session
 from werkzeug.urls import url_parse
 from app import app, db, email, payments_mod, events_rec
 from app.forms import LoginForm, IssueForm, EditIssueForm, UserForm, NewMachineForm, UserEditForm, DelayedPaymentsForm, CustomerForm
@@ -11,7 +11,7 @@ from pandas import DataFrame
 @app.route('/index/', methods=['GET', 'POST'])
 @login_required
 def index():
-#strona główna z niezakończonymi zgłoszeniami, dla danego użytkownika [PL]
+#main page with current issues
     if current_user.user_type in ('admin', 'warehouse', 'office'):
         page = request.args.get('page', 1, type=int)
         issues = Issues.query.filter(~Issues.janome_status.in_(['wymienione', 'odrzucone'])).order_by(Issues.time_stamp.desc()).paginate(
@@ -40,7 +40,7 @@ def index():
         events_rec.events_rec(current_user.username, 'issue {} was removed'.format(issue_id))
         return redirect(url_for('index'))
     if "export" in request.form:
-        #wywalić do osobnego modułu dodać do zgłoszeń
+        #creates a sheet with not reported issues
         col0 = []
         col1 = []
         col2 = []
@@ -76,6 +76,7 @@ def index():
         #return send_file(r'raports\waranty_parts_XX.XX.XXXX.xlsx',attachment_filename='waranty_parts_XX.XX.XXXX.xlsx', as_attachment=True)
 
     if "set_done" in request.form:
+        #mass change issue "status in factory (janome_status)" from "not reported" to "reported"
         new_issues = Issues.query.filter(Issues.janome_status.in_(['niezgłoszone', 'Niezgłoszone']))
         for item in new_issues:
             item.janome_status = 'zgłoszone'
@@ -312,6 +313,7 @@ def add_machine():
 @app.route('/payments/', methods=['GET','POST'])
 @login_required
 def payments():
+    #additional module. Is analyzing (payments_mod.py) data from "symfonia handel" and showing grouped (per customer) unpaid invoices.
     form = DelayedPaymentsForm()
     if current_user.user_type in ('admin', "office"):
         delayed_dict = {}
@@ -358,6 +360,7 @@ def payments():
 @app.route('/customers/', methods =['GET', 'POST'])
 @login_required
 def customers():
+    #is adding customers data for payments module
     form = CustomerForm()
     if current_user.user_type in ('admin', "office"):
         customers_list = Customers.query.order_by(Customers.code).all()
@@ -394,6 +397,7 @@ def customers():
 @app.route('/edit_customer/<customer_id>', methods = ['GET', 'POST'])
 @login_required
 def edit_customer(customer_id):
+    #edit customers form payments module
     form = CustomerForm()
     if current_user.user_type in ('admin', 'office'):
         selected_customer = Customers.query.filter_by(id=customer_id).first()
@@ -420,6 +424,7 @@ def edit_customer(customer_id):
 @app.route('/events/')
 @login_required
 def events():
+    #list of all users action (logs)
     if current_user.user_type == 'admin':
         page = request.args.get('page', 1, type=int)
         events = Events.query.order_by(Events.time_stamp.desc()).paginate(

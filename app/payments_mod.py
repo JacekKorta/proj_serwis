@@ -4,17 +4,9 @@ from app import app
 
 now = datetime.now()
 now_str = now.strftime('%Y-%m-%d')
-customers_adres = {"ZIMET":'info@janome.pl', 'ANWO': 'info@janome.pl'}
-
-'''
-class delayed_obj(customer_name, invoices, total_delayed_value):
-    self.customer_name = customer_name
-    self.invoices = invoices
-    self.total_delayed_value = total_delayed_value
-    ???
-'''
 
 def delayed_payments(data):
+    #additional module. Is analyzing data from "symfonia handel" and showing grouped (per customer) unpaid invoices.
     customers = {}
     data_list = data.split('\n')
     while '' in data_list:
