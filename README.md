@@ -1,9 +1,7 @@
 ﻿# Service issue manage system
 ## App to manage service issues between sales and tech service department and the manufacturer. 
-## Table of context
 ### Introduction
-#### <ewentualne rozwinięcie wprowadzenia>
-<Tło:
+#### Background:
 Firma prowadzi sprzedaż hurtową urządzeń AGD. W ramach prowadzonej działalności udziela  3-6 letnią gwarancji na swoje produkty. 
 W ramach gwarancji niezależne serwisy zgłaszają zapotrzebowanie do działu handlowego. Po zatwierdzeniu zgłoszenia dział handlowy daje zlecenie wymiany do magazynu. Magazyn wymienia uszkodzoną część na nową i dostarcza uszkodzoną część do działu handlowego. Dział handlowy blokuje nową część w ERP. 
 Raz w miesiącu dział handlowy składa raport o wymienionych częściach do producenta. Producent rozpatruje które części wymieni w ramach gwarancji. Części odrzucone w reklamacji przez producenta należy ściągnąć z magazynu (z ERP) dokumentem RW.
@@ -11,9 +9,10 @@ Części uznane przez producenta, w zależności od fabryki w której są produk
 Koncepcja:
 Stworzyć aplikacji dzięki której cały proces będzie transparenty i jak najbardziej zautomatyzowany.
 ### Technologies
-Python 3.7, flask, sqlalchemy, 
+Python 3.7, flask, sqlalchemy, for more see requirements.txt
 ### How to run?
-install packages: 
+
+1) install packages: 
  - flask
  - python-dotenv
  - flask-wtf
@@ -23,8 +22,23 @@ install packages:
  - flask-moment (convert time stamp for user local time)
  - flask-mail
  - pandas
- - openpyxl
+ - openpyxl 
  
-set FLASK_APP=
+2) set FLASK_APP=serwis.py
+
+3) create databese:
+a) flask db init
+b) flask db migrate
+c) flask db upgrade
+
+4) Edit fake_config.py file and change it name for config.py
+
+5) run and enyoj :)
 ### Actual status
+almost done, on production, 
+TODO:
+-refactor code
+-more tests
+-"Issue" and "Delayed payments" statistics
 ### References
+Inspired "The Flask Mega-Tutorial" from https://blog.miguelgrinberg.com
