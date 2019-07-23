@@ -1,4 +1,4 @@
-﻿# Service issue manage system
+﻿# Service issue management system
 ## App to manage service issues between sales and tech service department and the manufacturer. 
 ### Introduction
 #### Background:
