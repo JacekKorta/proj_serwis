@@ -27,9 +27,9 @@ Python 3.7, flask, sqlalchemy, for more see requirements.txt
 2) set FLASK_APP=serwis.py
 
 3) create databese:
-a) flask db init
-b) flask db migrate
-c) flask db upgrade
+a) flask db init<br>
+b) flask db migrate<br>
+c) flask db upgrade<br>
 
 4) Edit fake_config.py file and change it name for config.py
 
