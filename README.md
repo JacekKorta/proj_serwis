@@ -2,12 +2,7 @@
 ## App to manage service issues between sales and tech service department and the manufacturer. 
 ### Introduction
 #### Background:
-Firma prowadzi sprzedaż hurtową urządzeń AGD. W ramach prowadzonej działalności udziela  3-6 letnią gwarancji na swoje produkty. 
-W ramach gwarancji niezależne serwisy zgłaszają zapotrzebowanie do działu handlowego. Po zatwierdzeniu zgłoszenia dział handlowy daje zlecenie wymiany do magazynu. Magazyn wymienia uszkodzoną część na nową i dostarcza uszkodzoną część do działu handlowego. Dział handlowy blokuje nową część w ERP. 
-Raz w miesiącu dział handlowy składa raport o wymienionych częściach do producenta. Producent rozpatruje które części wymieni w ramach gwarancji. Części odrzucone w reklamacji przez producenta należy ściągnąć z magazynu (z ERP) dokumentem RW.
-Części uznane przez producenta, w zależności od fabryki w której są produkowane , są wymieniane odpowiednio po: 60-90 dni, 90-120 dni lub 120-150 dni.  Na życzenie producenta część części jest odsyłana do fabryk>
-Koncepcja:
-Stworzyć aplikacji dzięki której cały proces będzie transparenty i jak najbardziej zautomatyzowany.
+The company is a wholesaler of household appliances. As a part of its business, the company gives a 3-6 year warranty on its products. Under the warranty independent tech services report a request to the sales department. Once the request is approved, the sales department gives an exchange order to the warehouse. The warehouse exchanges the defective part for the new one and gives the defective part to the sales department, which then blocks the part in the ERP system. Once a month the sales department sends a report on all of the exchanged parts to the manufacturer. Then the manufacturer examines which parts shall be exchanged under the warranty. All of the rejected parts shall be taken from the warehouse (and from the ERP system) with the RW document. The parts accepted by the manufacturer, depending on the producing factory, are exchanged accordingly after: 60-90 days, 90-120 days or 120-150 days. At the manufacturer’s request some parts may be sent back to the factory. The concept was to create an app that helps to make the whole process more transparent and the most automated possible. 
 ### Technologies
 Python 3.7, flask, sqlalchemy, for more see requirements.txt
 ### How to run?
