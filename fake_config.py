@@ -9,7 +9,7 @@ class Config(object):
         'sqlite:///' + os.path.join(basedir, 'app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    VERSION = '0.4'
+    VERSION = '0.42'
 
     MAIL_SERVER = 'your_mail_server'
     MAIL_PORT = 587

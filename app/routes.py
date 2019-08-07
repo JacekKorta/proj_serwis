@@ -177,19 +177,22 @@ def edit_issue(issue_id):
     form = EditIssueForm()
     if (current_user.username == current_issue.owner) or current_user.user_type in ("admin", "warehouse", "office"):
         if form.validate_on_submit():
-            current_issue.owner = form.owner.data
-            current_issue.machine_model = form.machine_name.data
-            current_issue.serial_number = form.serial_number.data
-            current_issue.part_number = form.part_number.data
-            current_issue.quantity = form.quantity.data
-            current_issue.part_name = form.part_name.data
-            current_issue.issue_desc = form.issue_desc.data
-            current_issue.where_is_part = form.where_is_part.data
-            current_issue.exchange_status = form.exchange_status.data
-            current_issue.janome_status = form.janome_status.data
-            current_issue.comment = form.comment.data
-            current_issue.customer_delivery_time = form.customer_delivery_time.data
-            current_issue.delivery_time = form.delivery_time.data
+            if (current_user.username == current_issue.owner) or current_user.user_type in ("admin", "warehouse", "office"):
+                current_issue.owner = form.owner.data
+                current_issue.machine_model = form.machine_name.data
+                current_issue.serial_number = form.serial_number.data
+                current_issue.part_number = form.part_number.data
+                current_issue.quantity = form.quantity.data
+                current_issue.part_name = form.part_name.data
+                current_issue.issue_desc = form.issue_desc.data
+            if current_user.user_type in ("admin", "warehouse", "office"):
+                current_issue.where_is_part = form.where_is_part.data
+                current_issue.exchange_status = form.exchange_status.data
+            if current_user.user_type in ("admin", "office"):
+                current_issue.janome_status = form.janome_status.data
+                current_issue.comment = form.comment.data
+                current_issue.customer_delivery_time = form.customer_delivery_time.data
+                current_issue.delivery_time = form.delivery_time.data
             db.session.commit()
             flash('Zmiany zostały zapisane')
             events_rec.events_rec(current_user.username, 'edit: {}'.format(str(current_issue)))
