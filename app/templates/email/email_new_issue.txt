@@ -1,14 +1,14 @@
 
   Cześć,<br>
   w systemie pojawiło się nowe zgłoszenie nr {{ issue.id }}.
-  Zgłaszajacy: {{ issue.owner }}.
+  Zgłaszający: {{ issue.owner }}.
   Kod produktu: {{ issue.part_number }}.
   Maszyna: {{ issue.machine_model }}.
   Nr Seryjny : {{ issue.serial_number }}
   Nazwa produktu: {{ issue.part_name }}.
   Opis usterki: {{ issue.issue_desc }}.
 
-  Serwis: prosze przygotować uszkodzona część do wymiany.
+  Zgłaszający: prosze przygotować uszkodzona część do wymiany.
   Magazyn: jak tylko "Status dostarczenia do magazynu" zostanie zmieniony na "Czeka na wymianę" - prosze wymienić serwisowi tę część i uaktualnić tabelkę.
 
   UWAGA: jeśli widzisz tę wiadomość, to znaczy, że Twój klient poczty nie obsługuje wiadomości w formacie HTML. Zmień to, lub zgłoś ten fakt administratorowi.
