@@ -32,8 +32,11 @@ c) flask db upgrade<br>
 ### Actual status
 almost done, on production, 
 TODO:
--refactor code
--more tests
--"Issue" and "Delayed payments" statistics
+- refactor code
+- more tests
+- "Issue" and "Delayed payments" statistics
+- error mail to admin
+- mail in separate thread
 ### References
 Inspired "The Flask Mega-Tutorial" from https://blog.miguelgrinberg.com
+"Front" :) is from w3schools tutorials

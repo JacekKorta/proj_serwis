@@ -3,11 +3,13 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextA
 from wtforms.validators import DataRequired, ValidationError, EqualTo, Length
 from app.models import Machines, User
 
+
 class LoginForm(FlaskForm):
     username = StringField('Użytkownik', validators=[DataRequired()])
     password = PasswordField('Hasło', validators=[DataRequired()])
     remember_me = BooleanField('Zapamiętaj mnie')
     submit = SubmitField('Zaloguj')
+
 
 class IssueForm(FlaskForm):
     owner = StringField('Zgłaszajacy: ', validators=[DataRequired()])
@@ -18,6 +20,7 @@ class IssueForm(FlaskForm):
     issue_desc = TextAreaField('Opis usterki: ', validators=[DataRequired(), Length(min=3, max=400)])
     submit = SubmitField('Wyślij zgłoszenie')
 
+
 class EditIssueForm(IssueForm):
     quantity = IntegerField('Ilość:')
     where_is_part = StringField('Status dostarczenia do magazynu: ')
@@ -27,6 +30,7 @@ class EditIssueForm(IssueForm):
     delivery_time = StringField('Dostawa so ETI: ')
     comment = TextAreaField('Uwagi: ')
     submit = SubmitField('Zapisz zmiany')
+
 
 class UserForm(FlaskForm):
     user_type = StringField('Typ użytkownika', validators=[DataRequired()])
@@ -41,9 +45,11 @@ class UserForm(FlaskForm):
         if user is not None:
             raise ValidationError('Uzytkownik o takiej nazwie już istnieje.')
 
+
 class UserEditForm(UserForm):
     password = PasswordField('Hasło:')
     password2 = PasswordField('Powtórz hasło:', validators=[EqualTo('password')])
+
 
 class NewMachineForm(FlaskForm):
     machine_name = StringField('Model maszyny:')
@@ -54,9 +60,11 @@ class NewMachineForm(FlaskForm):
         if machine is not None:
             raise ValidationError('Ten model maszyny jest już w bazie.')
 
+
 class DelayedPaymentsForm(FlaskForm):
     clipboard_data = TextAreaField('Dane z symfonii:', validators=[DataRequired()])
     submit = SubmitField('Przetwarzaj')
+
 
 class CustomerForm(FlaskForm):
     code = StringField('Kod:', validators=[DataRequired()])

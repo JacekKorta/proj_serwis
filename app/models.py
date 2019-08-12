@@ -3,6 +3,7 @@ from app import db, login
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
+
 class User(UserMixin,db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(32), index=True, unique=True)
@@ -20,10 +21,11 @@ class User(UserMixin,db.Model):
 
     def __repr__(self):
         return '<User_id: {}; username: {}; email: {}; user_type: {}>'.format(
-        self.id,
-        self.username,
-        self.email,
-        self.user_type)
+            self.id,
+            self.username,
+            self.email,
+            self.user_type)
+
 
 class Issues(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -44,7 +46,8 @@ class Issues(db.Model):
 
     def __repr__(self):
         return'<Id: {}; machine_model: {}; serial_number: {}; product_num: {}, part_name: {};\
-        issue_desc: {}; where_is_part: {}; exchange_status: {}; janome_status: {}; comment: {}; delivery_time: {}>'.format(
+        issue_desc: {}; where_is_part: {}; exchange_status: {}; janome_status: {}; comment: {}; delivery_time: {}>'\
+            .format(
             self.id,
             self.machine_model,
             self.serial_number,
@@ -57,12 +60,14 @@ class Issues(db.Model):
             self.comment,
             self.delivery_time)
 
+
 class Machines(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(56), index=True)
 
     def __repr__(self):
         return '<id: {}; Name: {}>'.format(self.id, self.name)
+
 
 class Customers(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -74,8 +79,8 @@ class Customers(db.Model):
 
     def __repr__(self):
         return '<id: {}; code: {}; name: {}; phone_num: {}; phone2_num: {}; email: {}>'.format(
-        self.id, self.code, self.name, self.phone_num, self.phone2_num, self.email
-        )
+            self.id, self.code, self.name, self.phone_num, self.phone2_num, self.email)
+
 
 class Events(db.Model):
     id = db.Column(db.Integer, primary_key=True)

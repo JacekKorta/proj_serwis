@@ -4,7 +4,6 @@ from app import app, db
 from app.models import User, Issues
 
 
-
 class Tests(unittest.TestCase):
     def setUp(self):
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
@@ -22,19 +21,21 @@ class Tests(unittest.TestCase):
         self.assertTrue(u.check_password('larch'))
 
 
-
     def add_new_user(self, username, email, password, user_type ):
         return self.app.post(
             '/users/',
-            data=dict(username=username, email=email, password=password, user_type=user_type),
-            follow_redirects=True
-            )
+            data=dict(username=username,
+                      email=email,
+                      password=password,
+                      user_type=user_type),
+            follow_redirects=True)
 
     def login(self, username, password):
         return self.app.post('/login/',
-                             data=dict(username=username, password=password),
-                             follow_redirects=True
-                             )
+                             data=dict(username=username,
+                                       password=password),
+                             follow_redirects=True)
+
     def test_valid_new_user(self):
         response = self.add_new_user('Test', 'test@o2.pl', 'larch', 'office')
         self.assertEqual(response.status_code, 200)
@@ -83,5 +84,7 @@ class BasicSitesTest(unittest.TestCase):
         response = self.app.get('/edit_user/1', follow_redirects=True)
         self.assertEqual(response.status_code, 200)
 
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)
+
