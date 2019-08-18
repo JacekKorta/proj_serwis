@@ -41,7 +41,11 @@
                 <td><button type="button" class="btn btn-link" data-toggle="collapse" data-target="#issue_desc_full{{ issue.id }}">Pokaż opis usterki</button>
                     <div id="issue_desc_full{{ issue.id }}" class="collapse">{{ issue.issue_desc }}</div>
                 </td>
+                {% if issue.where_is_part in ("czeka na dostarczenie", "nowe") %}
+                <td bgcolor="red">{{ issue.where_is_part }}</td>
+                {% else %}
                 <td>{{ issue.where_is_part }}</td>
+                {% endif %}
                 {% if issue.exchange_status in ("czeka na wydanie", "czeka na wydanie (dostawa)", "czeka na wydanie (do zamówienia)", "czeka na wydanie (zamówione)", "wydane z maszyny") %}
                 <td bgcolor="red">{{ issue.exchange_status }}</td>
                 {% else %}

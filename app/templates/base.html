@@ -66,6 +66,7 @@ width: 200px;
                 <a href=" {{ url_for('new_issue') }}">Nowe zgłoszenie</a>
             {% endif %}
             <a href=" {{ url_for('issues') }}">Zgłoszenia</a>
+            <a href=" {{ url_for('issues_lite') }}">Zgłoszenia (BETA)</a>
             <a href="{{ url_for('logout') }}">Wyloguj</a>
             {% if current_user.user_type in "admin" %}
             <br><br> Narzędzia administatora:

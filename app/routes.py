@@ -6,6 +6,36 @@ from app.forms import LoginForm, IssueForm, EditIssueForm, UserForm, NewMachineF
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Issues, Machines, Customers, Events
 from pandas import DataFrame
+from sqlalchemy import or_
+
+
+@app.route('/login/', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Nieprawidłowe hasło lub nazwa użytkownika')
+            return redirect(url_for('login'))
+        login_user(user, remember=form.remember_me.data)
+        next_page = request.args.get('next')
+        events_rec.events_rec(current_user.username, 'was logged in')
+        if not next_page or url_parse(next_page).netloc != '':
+            next_page = url_for('index')
+        return redirect(next_page)
+    return render_template('login.html',
+                           title='Logowanie',
+                           form=form,
+                           version=app.config['VERSION'])
+
+
+@app.route('/logout/')
+def logout():
+    events_rec.events_rec(current_user.username, 'was logged out')
+    logout_user()
+    return redirect(url_for('index'))
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -105,36 +135,61 @@ def index():
                            prev_url=prev_url)
 
 
-@app.route('/login/', methods=['GET', 'POST'])
-def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-        if user is None or not user.check_password(form.password.data):
-            flash('Nieprawidłowe hasło lub nazwa użytkownika')
-            return redirect(url_for('login'))
-        login_user(user, remember=form.remember_me.data)
-        next_page = request.args.get('next')
-        events_rec.events_rec(current_user.username, 'was logged in')
-        if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('index')
-        return redirect(next_page)
-    return render_template('login.html',
-                           title='Logowanie',
-                           form=form,
+@app.route('/issues_lite/', methods= ['GET', 'POST'])
+@login_required
+def issues_lite():
+    # temporary view on warehouse demand (beta)
+    if current_user.user_type in ('admin', 'warehouse', 'office'):
+        page = request.args.get('page', 1, type=int)
+        issues = Issues.query.filter(or_(
+            Issues.exchange_status.in_(['nowe',
+                                        'czeka na wydanie',
+                                        'czeka na wydanie (do zamówienia)',
+                                        'czeka na wydanie (zamówione)',
+                                        'czeka na wydanie (z dostawy)',
+                                        'wydane z maszyny']),
+            Issues.where_is_part.in_(['nowe',
+                                     'czeka na dostarczenie',
+                                     'do zwrotu klientowi'])))\
+            .order_by(Issues.time_stamp.desc()).paginate(page, app.config['ISSUES_PER_PAGE'], False)
+        next_url = url_for('issues', page=issues.next_num) if issues.has_next else None
+        prev_url = url_for('issues', page=issues.prev_num) if issues.has_prev else None
+
+    elif current_user.user_type in 'service':
+        page = request.args.get('page', 1, type=int)
+        issues = Issues.query.filter(
+            Issues.owner == current_user.username,
+            ~Issues.janome_status.in_(['wymienione', 'odrzucone'])).order_by(
+            Issues.time_stamp.desc()).paginate(
+            page,
+            app.config['ISSUES_PER_PAGE'],
+            False)
+        next_url = url_for('issues', page=issues.next_num) if issues.has_next else None
+        prev_url = url_for('issues', page=issues.prev_num) if issues.has_prev else None
+
+    if 'edit' in request.form:
+        issue = request.form.to_dict()
+        issue_id = issue['form_id']
+        return redirect(url_for('edit_issue', issue_id=issue_id))
+    if 'remove' in request.form:
+        issue = request.form.to_dict()
+        issue_id = issue['form_id']
+        selected_issue = Issues.query.filter_by(id=issue_id).first()
+        db.session.delete(selected_issue)
+        db.session.commit()
+        flash('Zgłoszenie nr {} zostało usunięte'.format(issue_id))
+        events_rec.events_rec(current_user.username, 'issue {} was removed'.format(issue_id))
+        return redirect(url_for('issues_lite'))
+    return render_template('index.html',
+                           issues=issues.items,
+                           title='Zgłoszenia',
+                           next_url=next_url,
+                           prev_url=prev_url,
                            version=app.config['VERSION'])
 
 
-@app.route('/logout/')
-def logout():
-    events_rec.events_rec(current_user.username, 'was logged out')
-    logout_user()
-    return redirect(url_for('index'))
 
-
-@app.route('/issues/', methods=['GET','POST'])
+@app.route('/issues/', methods=['GET', 'POST'])
 @login_required
 def issues():
     if current_user.user_type in ('admin', 'warehouse', "office"):
