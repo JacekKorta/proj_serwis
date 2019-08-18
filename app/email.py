@@ -12,7 +12,7 @@ def send_mail(subject, sender, recipients, text_body, html_body):
 
 def send_new_issue(user, issue):
     # sending mail about new issue
-    subject = '[SERWIS] Nowe zgłoszenie serwisowe nr {}'.format(issue.id)
+    subject = '[SERWIS] {} - nowe zgłoszenie serwisowe'.format(issue.id)
     admin_adres = app.config['ADMIN'][0]
     warehouse_adres = app.config['WAREHOUSE'][0]
     send_mail(subject,

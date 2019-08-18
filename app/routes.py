@@ -557,8 +557,8 @@ def events():
         page = request.args.get('page', 1, type=int)
         events = Events.query.order_by(Events.time_stamp.desc()).paginate(
             page, app.config['EVENTS_PER_PAGE'], False)
-        next_url = url_for('events', age=events.next_num) if events.has_next else None
-        prev_url = url_for('events', age=events.prev_num) if events.has_prev else None
+        next_url = url_for('events', page=events.next_num) if events.has_next else None
+        prev_url = url_for('events', page=events.prev_num) if events.has_prev else None
     else:
         events_rec.events_rec(current_user.username, 'tried tricky tricks :)')
         return render_template('access_denied.html', title='Brak dostępu')
