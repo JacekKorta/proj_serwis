@@ -61,23 +61,26 @@ width: 200px;
             {% if current_user.is_anonymous %}
               <a href=" {{ url_for('login') }}">Logowanie</a>
             {% else %}
-                <a href=" {{ url_for('index') }}">Strona główna</a>
-            {% if current_user.user_type not in "warehouse" %}
-                <a href=" {{ url_for('new_issue') }}">Nowe zgłoszenie</a>
+            <a href=" {{ url_for('index') }}">| Bieżące zgłoszenia </a>
+
+            <a href=" {{ url_for('issues') }}">| Wszystkie zgłoszenia </a>
+            {% if current_user.user_type not in "service" %}
+              <a href=" {{ url_for('issues_lite') }}">| Zgłoszenia (MAGAZYN) </a>
             {% endif %}
-            <a href=" {{ url_for('issues') }}">Zgłoszenia</a>
-            <a href=" {{ url_for('issues_lite') }}">Zgłoszenia (BETA)</a>
-            <a href="{{ url_for('logout') }}">Wyloguj</a>
+            {% if current_user.user_type not in "warehouse" %}
+              <a href=" {{ url_for('new_issue') }}">| Nowe zgłoszenie </a>
+            {% endif %}
+            <a href="{{ url_for('logout') }}">| Wyloguj |</a>
             {% if current_user.user_type in "admin" %}
             <br><br> Narzędzia administatora:
-                <a href=" {{ url_for('users') }}">Użytkownicy</a>
-                <a href=" {{ url_for('add_machine') }}">Maszyny</a>
-                <a href=" {{ url_for('events') }}">Zdarzenia</a>
+                <a href=" {{ url_for('users') }}">| Użytkownicy </a>
+                <a href=" {{ url_for('add_machine') }}">| Maszyny </a>
+                <a href=" {{ url_for('events') }}">| Zdarzenia |</a>
             {% endif %}
             {% if current_user.user_type in ("admin", "office") %}
                 <br><br> Moduł płatności:
-                <a href=" {{ url_for('payments') }}">Płatności</a>
-                <a href=" {{ url_for('customers') }}">Klienci</a>
+                <a href=" {{ url_for('payments') }}">| Płatności </a>
+                <a href=" {{ url_for('customers') }}">| Klienci |</a>
             {% endif %}
             {% endif %}
         </p>

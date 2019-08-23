@@ -55,7 +55,7 @@ def index():
         page = request.args.get('page', 1, type=int)
         issues = Issues.query.filter(
             Issues.owner == current_user.username,
-            ~Issues.janome_status.in_(['wymienione', 'odrzucone'])).order_by(
+            ~Issues.exchange_status.in_(['wydane', 'odrzucone'])).order_by(
             Issues.time_stamp.desc()).paginate(
             page,
             app.config['ISSUES_PER_PAGE'],
@@ -159,7 +159,7 @@ def issues_lite():
         page = request.args.get('page', 1, type=int)
         issues = Issues.query.filter(
             Issues.owner == current_user.username,
-            ~Issues.janome_status.in_(['wymienione', 'odrzucone'])).order_by(
+            ~Issues.exchange_status.in_(['wydane', 'odrzucone'])).order_by(
             Issues.time_stamp.desc()).paginate(
             page,
             app.config['ISSUES_PER_PAGE'],
