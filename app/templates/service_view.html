@@ -20,6 +20,7 @@
         <th>Opis usterki</th>
         <th>Status dostarczenia do magazynu</th>
         <th>Status wymiany klientowi</th>
+        <th>Przewidywany termin dostawy do klienta</th>
     </tr>
     {% for issue in issues %}
     <tbody id="my_table">
@@ -42,6 +43,7 @@
                     <td>{{ issue.where_is_part }}</td>
                 {% endif %}
                 <td>{{ issue.exchange_status }}</td>
+                <td>{{ issue.customer_delivery_time }}</td>
                 <input type="hidden" name="form_id" value="{{ issue.id }}">
                 <td><input type="submit" name="edit" value="Zmień"></td>
             </form>
