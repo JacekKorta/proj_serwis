@@ -1,12 +1,13 @@
 from flask import render_template, flash, redirect, url_for, request, send_file, session
+from flask_login import current_user, login_user, logout_user, login_required
+from pandas import DataFrame
+from sqlalchemy import or_
 from werkzeug.urls import url_parse
+
 from app import app, db, email, payments_mod, events_rec
 from app.forms import LoginForm, IssueForm, EditIssueForm, UserForm, NewMachineForm, UserEditForm, \
     DelayedPaymentsForm, CustomerForm
-from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Issues, Machines, Customers, Events
-from pandas import DataFrame
-from sqlalchemy import or_
 
 
 @app.route('/login/', methods=['GET', 'POST'])
@@ -42,7 +43,7 @@ def logout():
 @app.route('/index/', methods=['GET', 'POST'])
 @login_required
 def index():
-    # main page with current issues
+    # Main page with current issues
     if current_user.user_type in ('admin', 'warehouse', 'office'):
         page = request.args.get('page', 1, type=int)
         issues = Issues.query.filter(
@@ -77,7 +78,7 @@ def index():
         events_rec.events_rec(current_user.username, 'issue {} was removed'.format(issue_id))
         return redirect(url_for('index'))
     if "export" in request.form:
-        # creates a sheet with not reported issues
+        # Creates a sheet with not reported issues
         col0 = []
         col1 = []
         col2 = []
@@ -106,20 +107,20 @@ def index():
                         })
         events_rec.events_rec(
             current_user.username, 'export xlsx file for these isuess id: {}'.format(''.join(str(issues_id_list))))
-        # online:
+        # Online:
         df.to_excel(r'/home/eaters/mysite/app/static/waranty_parts_XX.XX.XXXX.xlsx',
                     sheet_name='waranty_parts1',
                     index=False)
         return send_file(r'/home/eaters/mysite/app/static/waranty_parts_XX.XX.XXXX.xlsx',
                          attachment_filename='waranty_parts_XX.XX.XXXX.xlsx',
                          as_attachment=True)
-        # offline:
+        # Offline:
         # df.to_excel(r'app\raports\waranty_parts_XX.XX.XXXX.xlsx', sheet_name='waranty_parts1', index=False)
         # return send_file(r'raports\waranty_parts_XX.XX.XXXX.xlsx',
         # attachment_filename='waranty_parts_XX.XX.XXXX.xlsx', as_attachment=True)
 
     if "set_done" in request.form:
-        # mass change issue "status in factory (janome_status)" from "not reported" to "reported"
+        # Mass change issue "status in factory (janome_status)" from "not reported" to "reported"
         new_issues = Issues.query.filter(Issues.janome_status.in_(['niezgłoszone', 'Niezgłoszone']))
         for item in new_issues:
             item.janome_status = 'zgłoszone'
@@ -138,7 +139,7 @@ def index():
 @app.route('/issues_lite/', methods= ['GET', 'POST'])
 @login_required
 def issues_lite():
-    # temporary view on warehouse demand (beta)
+    # Temporary view on warehouse demand (beta)
     if current_user.user_type in ('admin', 'warehouse', 'office'):
         page = request.args.get('page', 1, type=int)
         issues = Issues.query.filter(or_(
@@ -186,7 +187,6 @@ def issues_lite():
                            next_url=next_url,
                            prev_url=prev_url,
                            version=app.config['VERSION'])
-
 
 
 @app.route('/issues/', methods=['GET', 'POST'])
@@ -247,7 +247,7 @@ def new_issue():
         db.session.commit()
         flash('Dodano zgłoszenie nr {}'.format(issue.id))
         events_rec.events_rec(current_user.username, 'added: {}'.format(str(issue)))
-        # online:
+        # Online:
         # email.send_new_issue(current_user, issue)
         return redirect(url_for('issues'))
     return render_template('/new_issue.html',
@@ -353,7 +353,7 @@ def users():
 def edit_user(user_id):
     users_type_list = ['admin', 'warehouse', 'service', 'office', '']
     form = UserEditForm()
-    # if current_user.user_type == 'admin':
+    # If current_user.user_type == 'admin':
     if (current_user.id == int(user_id)) or (current_user.user_type == "admin"):
         selected_user = User.query.filter_by(id=user_id).first()
         if form.validate_on_submit():
@@ -420,7 +420,7 @@ def add_machine():
 @app.route('/payments/', methods=['GET','POST'])
 @login_required
 def payments():
-    # additional module. Is analyzing (payments_mod.py) data from "symfonia handel"
+    # Additional module. Is analyzing (payments_mod.py) data from "symfonia handel"
     # and showing grouped (per customer) unpaid invoices.
     form = DelayedPaymentsForm()
     if current_user.user_type in ('admin', "office"):
@@ -474,7 +474,7 @@ def payments():
 @app.route('/customers/', methods =['GET', 'POST'])
 @login_required
 def customers():
-    # is adding customers data for payments module
+    # Is adding customers data for payments module
     form = CustomerForm()
     if current_user.user_type in ('admin', "office"):
         customers_list = Customers.query.order_by(Customers.code).all()
@@ -519,7 +519,7 @@ def customers():
 @app.route('/edit_customer/<customer_id>', methods=['GET', 'POST'])
 @login_required
 def edit_customer(customer_id):
-    # edit customers form payments module
+    # Edit customers form payments module
     form = CustomerForm()
     if current_user.user_type in ('admin', 'office'):
         selected_customer = Customers.query.filter_by(id=customer_id).first()
@@ -552,7 +552,7 @@ def edit_customer(customer_id):
 @app.route('/events/')
 @login_required
 def events():
-    # list of all users action (logs)
+    # List of all users action (logs)
     if current_user.user_type == 'admin':
         page = request.args.get('page', 1, type=int)
         events = Events.query.order_by(Events.time_stamp.desc()).paginate(

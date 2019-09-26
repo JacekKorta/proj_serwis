@@ -3,7 +3,7 @@ from app import db
 
 
 def events_rec(current_user, description):
-    # records all key activity per user
+    # Records all key activity per user
     event = Events(user=current_user, description=description)
     db.session.add(event)
     db.session.commit()
