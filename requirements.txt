@@ -19,7 +19,7 @@ django-ipware==3.0.0
 django-otp==0.9.3 
 django-simple-history==2.11.0
 django-storages==1.9.1
-django==3.0.8
+django==3.1.12
 djangorestframework-camel-case==1.2.0
 djangorestframework-simplejwt==4.4.0
 djangorestframework==3.11.0
